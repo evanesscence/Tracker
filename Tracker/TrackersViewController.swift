@@ -1,6 +1,10 @@
 import UIKit
 
 class TrackersViewController: UIViewController {
+    var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
+    var newCategories: [TrackerCategory] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -17,21 +21,48 @@ class TrackersViewController: UIViewController {
             addButton.heightAnchor.constraint(equalToConstant: 42)
         ])
         
-        let dateLabel = UILabel()
-        dateLabel.text = "03.05.24"
-        dateLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        dateLabel.textColor = .tBlack
-        dateLabel.backgroundColor = .tGray
-        dateLabel.clipsToBounds = true
-        dateLabel.layer.cornerRadius = 8
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        let dateButton = UIButton()
+        dateButton.setTitle(" 03.05.24 ", for: .normal)
+        dateButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        dateButton.setTitleColor(.tBlack, for: .normal)
+        dateButton.backgroundColor = .tGray
+        dateButton.clipsToBounds = true
+        dateButton.layer.cornerRadius = 8
+        dateButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(dateLabel)
+        view.addSubview(dateButton)
         
         NSLayoutConstraint.activate([
-            dateLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
-            dateLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            dateLabel.heightAnchor.constraint(equalToConstant: 34)
+            dateButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
+            dateButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            dateButton.heightAnchor.constraint(equalToConstant: 34)
+        ])
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Трекеры"
+        label.font = .systemFont(ofSize: 34, weight: .bold)
+        label.textColor = .tBlack
+    
+        view.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 1),
+            label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+        ])
+        
+        let searchBar = UISearchTextField()
+        searchBar.placeholder = "Поиск"
+        searchBar.backgroundColor = .tWhite
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+      
+        view.addSubview(searchBar)
+        
+        NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 7),
+            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16),
+            searchBar.heightAnchor.constraint(equalToConstant: 36)
         ])
         
         let defaultImage = UIImageView()
@@ -60,17 +91,5 @@ class TrackersViewController: UIViewController {
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
         ])
         
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Трекеры"
-        label.font = .systemFont(ofSize: 34, weight: .bold)
-        label.textColor = .tBlack
-    
-        view.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 1),
-            label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
-        ])
     }
 }
