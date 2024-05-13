@@ -5,39 +5,22 @@ class TrackersViewController: UIViewController {
     var completedTrackers: [TrackerRecord] = []
     var newCategories: [TrackerCategory] = []
     
+    private lazy var datePicker: UIDatePicker = {
+       let datePicker = UIDatePicker()
+       datePicker.datePickerMode = .date
+       datePicker.preferredDatePickerStyle = .compact
+       datePicker.locale = Locale(identifier: "ru_RU")
+       
+       return datePicker
+       }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let addButton = UIButton()
-        addButton.setImage(UIImage(named: "AddButton"), for: .normal)
-        addButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(addButton)
-        
-        NSLayoutConstraint.activate([
-            addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
-            addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
-            addButton.widthAnchor.constraint(equalToConstant: 42),
-            addButton.heightAnchor.constraint(equalToConstant: 42)
-        ])
-        
-        let dateButton = UIButton()
-        dateButton.setTitle(" 03.05.24 ", for: .normal)
-        dateButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        dateButton.setTitleColor(.tBlack, for: .normal)
-        dateButton.backgroundColor = .tGray
-        dateButton.clipsToBounds = true
-        dateButton.layer.cornerRadius = 8
-        dateButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(dateButton)
-        
-        NSLayoutConstraint.activate([
-            dateButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
-            dateButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            dateButton.heightAnchor.constraint(equalToConstant: 34)
-        ])
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "AddButton"), style: .plain, target: self, action: nil)
+        navigationItem.leftBarButtonItem?.tintColor = .tBlack
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+            
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Трекеры"
@@ -47,7 +30,7 @@ class TrackersViewController: UIViewController {
         view.addSubview(label)
         
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 1),
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
         
@@ -90,6 +73,5 @@ class TrackersViewController: UIViewController {
             defaultText.centerXAnchor.constraint(equalTo: defaultImage.centerXAnchor),
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
         ])
-        
     }
 }
