@@ -5,34 +5,29 @@ class TrackersViewController: UIViewController {
     var completedTrackers: [TrackerRecord] = []
     var newCategories: [TrackerCategory] = []
     
+    
     private lazy var datePicker: UIDatePicker = {
-       let datePicker = UIDatePicker()
-       datePicker.datePickerMode = .date
-       datePicker.preferredDatePickerStyle = .compact
-       datePicker.locale = Locale(identifier: "ru_RU")
-       
-       return datePicker
-       }()
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.widthAnchor.constraint(equalToConstant: 120).isActive = true 
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        
+        return datePicker
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "AddButton"), style: .plain, target: self, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "AddButton"), style: .plain, target: self, action: #selector(createNewTracker))
         navigationItem.leftBarButtonItem?.tintColor = .tBlack
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-            
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Трекеры"
-        label.font = .systemFont(ofSize: 34, weight: .bold)
-        label.textColor = .tBlack
-    
-        view.addSubview(label)
         
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
-        ])
+        title = "Трекеры"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
         
         let searchBar = UISearchTextField()
         searchBar.placeholder = "Поиск"
@@ -42,7 +37,7 @@ class TrackersViewController: UIViewController {
         view.addSubview(searchBar)
         
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 7),
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 7),
             searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16),
             searchBar.heightAnchor.constraint(equalToConstant: 36)
@@ -73,5 +68,18 @@ class TrackersViewController: UIViewController {
             defaultText.centerXAnchor.constraint(equalTo: defaultImage.centerXAnchor),
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
         ])
+    }
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        let selectedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        let formattedDate = dateFormatter.string(from: selectedDate)
+        print("Выбранная дата: \(formattedDate)")
+    }
+    
+    @objc func createNewTracker() {
+        let newTracker = UINavigationController(rootViewController: NewTrackerController()) 
+        present(newTracker, animated: true, completion: nil)
     }
 }
