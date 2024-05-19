@@ -5,6 +5,11 @@ enum TypeOfEvent {
     case irregularEvent
 }
 
+enum Properties: String, CaseIterable {
+    case category = "Категория"
+    case sсhedule = "Расписание"
+}
+
 class EventsController: UIViewController {
     let emoji = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🍄"]
     var type: TypeOfEvent
@@ -48,9 +53,11 @@ class EventsController: UIViewController {
         case .habbit:
             title = "Новая привычка"
             properties = ["Категория", "Расписание"]
+            break
         case .irregularEvent:
             title = "Новое нерегулярное событие"
             properties = ["Категория"]
+            break
         }
     }
     
@@ -105,6 +112,18 @@ class EventsController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
+    
+    private func setViewController(for property: String) -> UIViewController {
+        var vc = UIViewController()
+        if property == Properties.category.rawValue {
+            vc = CategoriesController()
+        }
+        
+        if property == Properties.sсhedule.rawValue {
+            vc = ScheduleController()
+        }
+        return vc
+    }
 }
 
 extension EventsController: UITableViewDataSource {
@@ -133,6 +152,12 @@ extension EventsController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = setViewController(for: properties[indexPath.row])
+        present(UINavigationController(rootViewController: vc), animated: true)
+        
+    }
 }
 
 
@@ -156,7 +181,6 @@ extension EventsController: UICollectionViewDataSource {
         
         return cell
     }
-    
     
 }
 

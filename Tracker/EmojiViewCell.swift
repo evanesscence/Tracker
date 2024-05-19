@@ -2,6 +2,7 @@ import UIKit
 
 class EmojiViewCell: UICollectionViewCell {
     let emoji = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
