@@ -8,6 +8,7 @@ class ScheduleController: UIViewController {
         return tableView
     }()
     
+    private let confirmButton = UIButton()
     private let days = Days.allCases
     
     override func viewDidLoad() {
@@ -15,12 +16,16 @@ class ScheduleController: UIViewController {
         title = "Расписание"
         view.backgroundColor = .tWhite
         
+        setupConfirmButton()
         setupScheduleTableView()
     }
     
     private func setupScheduleTableView() {
         scheduleTableView.tableHeaderView = UIView()
         scheduleTableView.layer.cornerRadius = 16
+        scheduleTableView.clipsToBounds = true
+       
+     
         scheduleTableView.alwaysBounceVertical = false
         scheduleTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         scheduleTableView.allowsSelection = false
@@ -38,7 +43,26 @@ class ScheduleController: UIViewController {
         scheduleTableView.dataSource = self
         scheduleTableView.delegate = self
     }
+    
+    private func setupConfirmButton() {
+        confirmButton.backgroundColor = .tBlack
+        confirmButton.tintColor = .tWhite
+        confirmButton.layer.cornerRadius = 16
+        confirmButton.setTitle("Готово", for: .normal)
+        
+        
+        view.addSubview(confirmButton)
+        confirmButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            confirmButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            confirmButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            confirmButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
+    }
 }
+
 
 extension ScheduleController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -1,6 +1,7 @@
 import UIKit
 
 final class ScheduleTableViewCell: UITableViewCell {
+    weak var delegate: EventsControllerProtocol?
     static let reuseIdentifier = "ScheduleTableViewCell"
     private var dayLabel = UILabel()
     private var switchButton = UISwitch()
@@ -50,12 +51,12 @@ final class ScheduleTableViewCell: UITableViewCell {
         ])
         
         switchButton.onTintColor = .tBlue
-        switchButton.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
+        switchButton.addTarget(self, action: #selector(changeSwitch()), for: .valueChanged)
     }
     
     
     @objc
     private func changeSwitch() {
-        print("j")
+        delegate?.didChangedDayState(for: <#T##String#>)
     }
 }

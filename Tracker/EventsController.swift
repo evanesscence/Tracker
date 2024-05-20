@@ -1,5 +1,9 @@
 import UIKit
 
+protocol EventsControllerProtocol: AnyObject {
+    func didChangedDayState(for day: String)
+}
+
 enum TypeOfEvent {
     case habbit
     case irregularEvent
@@ -24,6 +28,7 @@ class EventsController: UIViewController {
     
     private let trackerLabelTextField = TextField()
     private var properties = [String]()
+    private var selectedDates = [String]()
     
     private let eventPropertiesTable = {
         let tableView = UITableView()
@@ -141,7 +146,7 @@ extension EventsController: UITableViewDataSource {
             cell.separatorInset = UIEdgeInsets(top: 0, left: cell.bounds.size.width, bottom: 0, right: 0)
         }
         
-        let cellModel = TrackerPropertiesModel(title: properties[indexPath.row], image: UIImage(named: "Arrow") ?? UIImage())
+        let cellModel = TrackerPropertiesModel(title: properties[indexPath.row], image: UIImage(named: "Arrow") ?? UIImage(), selectedDays: selectedDates)
         
         cell.configCell(for: cellModel)
         return cell
@@ -184,6 +189,8 @@ extension EventsController: UICollectionViewDataSource {
     
 }
 
-extension EventsController: UICollectionViewDelegateFlowLayout {
-    
+extension EventsController: EventsControllerProtocol {
+    func didChangedDayState(for day: String) {
+        selectedDates.append(day)
+    }
 }
