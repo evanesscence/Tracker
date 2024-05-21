@@ -1,6 +1,13 @@
 import UIKit
 
+protocol ScheduleControllerProtocol: AnyObject {
+    func didSelectedDays(for day: DaysOfWeek)
+}
+
 class ScheduleController: UIViewController {
+    
+    private var selectedDays: [DaysOfWeek] = []
+    weak var delegate: EventsControllerProtocol?
     
     private let scheduleTableView = {
         let tableView = UITableView()
@@ -13,8 +20,10 @@ class ScheduleController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         title = "Расписание"
         view.backgroundColor = .tWhite
+        
         
         setupConfirmButton()
         setupScheduleTableView()
@@ -45,6 +54,7 @@ class ScheduleController: UIViewController {
     }
     
     private func setupConfirmButton() {
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         confirmButton.backgroundColor = .tBlack
         confirmButton.tintColor = .tWhite
         confirmButton.layer.cornerRadius = 16
@@ -61,6 +71,18 @@ class ScheduleController: UIViewController {
             confirmButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
+    
+    @objc
+    private func confirmButtonTapped() {
+        delegate?.didConfirm(with: selectedDays)
+        dismiss(animated: true)
+    }
+}
+
+extension ScheduleController: ScheduleControllerProtocol {
+    func didSelectedDays(for day: DaysOfWeek) {
+        selectedDays.append(day)
+    }
 }
 
 
@@ -75,7 +97,9 @@ extension ScheduleController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let dayName = days[indexPath.row].longFormat()
+        cell.delegate = self
+        
+        let dayName = days[indexPath.row]
         cell.configCell(for: dayName)
         
         if indexPath.row == days.count-1 {

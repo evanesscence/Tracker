@@ -3,7 +3,7 @@ import UIKit
 struct TrackerPropertiesModel {
     let title: String
     let image: UIImage
-    let selectedDays: [String]
+    let selectedDays: String?
 }
 
 class TrackerPropertiesCell: UITableViewCell {
@@ -70,8 +70,12 @@ class TrackerPropertiesCell: UITableViewCell {
     }
     
     func configCell(for cell: TrackerPropertiesModel) {
+        if cell.title == Properties.sсhedule.rawValue {
+            chosenPropertiesLabel.text = cell.selectedDays
+        }
+       
+      
         propertiesLabel.text = cell.title
-        chosenPropertiesLabel.text = ""
         chosenPropertiesLabel.textColor = .tTextFieldLabel
         propertiesImage.image = cell.image
     }

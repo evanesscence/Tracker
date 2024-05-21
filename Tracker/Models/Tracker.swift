@@ -9,8 +9,8 @@ struct Tracker {
 }
 
 struct DaysOfWeek {
-    let day: [Days]
-    let isOn: Bool
+    let day: Days
+    var isOn: Bool
 }
 
 enum Days: String, CaseIterable {

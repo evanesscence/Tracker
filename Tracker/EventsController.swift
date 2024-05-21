@@ -1,7 +1,7 @@
 import UIKit
 
 protocol EventsControllerProtocol: AnyObject {
-    func didChangedDayState(for day: String)
+    func didConfirm(with days: [DaysOfWeek])
 }
 
 enum TypeOfEvent {
@@ -28,7 +28,7 @@ class EventsController: UIViewController {
     
     private let trackerLabelTextField = TextField()
     private var properties = [String]()
-    private var selectedDates = [String]()
+    private var selectedDays: String?
     
     private let eventPropertiesTable = {
         let tableView = UITableView()
@@ -121,11 +121,14 @@ class EventsController: UIViewController {
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
         if property == Properties.category.rawValue {
-            vc = CategoriesController()
+            let categoriesController = CategoriesController()
+            vc = categoriesController
         }
         
         if property == Properties.sсhedule.rawValue {
-            vc = ScheduleController()
+            let scheduleController = ScheduleController()
+            scheduleController.delegate = self
+            vc = scheduleController
         }
         return vc
     }
@@ -146,7 +149,7 @@ extension EventsController: UITableViewDataSource {
             cell.separatorInset = UIEdgeInsets(top: 0, left: cell.bounds.size.width, bottom: 0, right: 0)
         }
         
-        let cellModel = TrackerPropertiesModel(title: properties[indexPath.row], image: UIImage(named: "Arrow") ?? UIImage(), selectedDays: selectedDates)
+        let cellModel = TrackerPropertiesModel(title: properties[indexPath.row], image: UIImage(named: "Arrow") ?? UIImage(), selectedDays: selectedDays)
         
         cell.configCell(for: cellModel)
         return cell
@@ -164,7 +167,6 @@ extension EventsController: UITableViewDelegate {
         
     }
 }
-
 
 extension EventsController: UICollectionViewDelegate {
     
@@ -190,7 +192,12 @@ extension EventsController: UICollectionViewDataSource {
 }
 
 extension EventsController: EventsControllerProtocol {
-    func didChangedDayState(for day: String) {
-        selectedDates.append(day)
+    func didConfirm(with days: [DaysOfWeek]) {
+        if days.count == 7 {
+            selectedDays = "Каждый день"
+        } else {
+            selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")
+        }
+        eventPropertiesTable.reloadData()
     }
 }

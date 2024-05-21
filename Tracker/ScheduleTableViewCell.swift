@@ -1,8 +1,9 @@
 import UIKit
 
 final class ScheduleTableViewCell: UITableViewCell {
-    weak var delegate: EventsControllerProtocol?
+    weak var delegate: ScheduleControllerProtocol?
     static let reuseIdentifier = "ScheduleTableViewCell"
+    private var dayModel: DaysOfWeek?
     private var dayLabel = UILabel()
     private var switchButton = UISwitch()
     
@@ -19,8 +20,9 @@ final class ScheduleTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configCell(for dayName: String) {
-        dayLabel.text = dayName
+    func configCell(for day: Days) {
+        dayModel = DaysOfWeek(day: day, isOn: switchButton.isOn)
+        dayLabel.text = day.longFormat()
     }
     
     private func setupUI(for elements: [UIView]) {
@@ -41,8 +43,6 @@ final class ScheduleTableViewCell: UITableViewCell {
     }
     
     private func setupSwitchButton() {
-       
-       
         NSLayoutConstraint.activate([
             switchButton.centerYAnchor.constraint(equalTo: dayLabel.centerYAnchor),
             switchButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -51,12 +51,15 @@ final class ScheduleTableViewCell: UITableViewCell {
         ])
         
         switchButton.onTintColor = .tBlue
-        switchButton.addTarget(self, action: #selector(changeSwitch()), for: .valueChanged)
+        switchButton.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
     }
     
     
     @objc
     private func changeSwitch() {
-        delegate?.didChangedDayState(for: <#T##String#>)
+        if var day = dayModel {
+            day.isOn = switchButton.isOn
+            delegate?.didSelectedDays(for: day)
+        }
     }
 }
