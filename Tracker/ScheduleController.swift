@@ -74,6 +74,7 @@ class ScheduleController: UIViewController {
     
     @objc
     private func confirmButtonTapped() {
+        selectedDays.sort(by: { $0.day.rawValue < $1.day.rawValue })
         delegate?.didConfirm(with: selectedDays)
         dismiss(animated: true)
     }
@@ -81,7 +82,11 @@ class ScheduleController: UIViewController {
 
 extension ScheduleController: ScheduleControllerProtocol {
     func didSelectedDays(for day: DaysOfWeek) {
-        selectedDays.append(day)
+        if !selectedDays.contains(where: {$0.day == day.day }) {
+            selectedDays.append(day)
+        } else {
+            selectedDays.removeAll(where: {$0.day == day.day})
+        }
     }
 }
 

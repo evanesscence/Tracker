@@ -5,6 +5,12 @@ class TrackersViewController: UIViewController {
     var completedTrackers: [TrackerRecord] = []
     var newCategories: [TrackerCategory] = []
     
+    private let searchBar = UISearchTextField()
+    private var trackerCollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: TrackerCollectionViewCell.reusedIdentifier)
+        return collectionView
+    }()
     
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
@@ -29,7 +35,7 @@ class TrackersViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         
         
-        let searchBar = UISearchTextField()
+        
         searchBar.placeholder = "Поиск"
         searchBar.backgroundColor = .tWhite
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +74,23 @@ class TrackersViewController: UIViewController {
             defaultText.centerXAnchor.constraint(equalTo: defaultImage.centerXAnchor),
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
         ])
+        
+        setupTrackerCollectionView()
+    }
+    
+    private func setupTrackerCollectionView() {
+        view.addSubview(trackerCollectionView)
+        trackerCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            trackerCollectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 24),
+            trackerCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            trackerCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        trackerCollectionView.delegate = self
+        trackerCollectionView.dataSource = self
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -82,6 +105,32 @@ class TrackersViewController: UIViewController {
         let newTracker = UINavigationController(rootViewController: NewTrackerController()) 
         present(newTracker, animated: true, completion: nil)
     }
+}
+
+extension TrackersViewController: UICollectionViewDataSource {
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        return 10/*newCategories.count*/
+//    }
+//    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10/*newCategories[section].trackers.count*/
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCollectionViewCell.reusedIdentifier, for: indexPath) as? TrackerCollectionViewCell else {
+            print("err")
+            return UICollectionViewCell()
+        }
+        
+        cell.configCell()
+        
+        return cell
+    }
+    
+}
+
+extension TrackersViewController: UICollectionViewDelegate {
+    
 }
 
 

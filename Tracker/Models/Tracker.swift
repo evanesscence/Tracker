@@ -13,8 +13,8 @@ struct DaysOfWeek {
     var isOn: Bool
 }
 
-enum Days: String, CaseIterable {
-    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+enum Days: Int, CaseIterable {
+    case monday = 1, tuesday = 2, wednesday = 3, thursday = 4, friday = 5, saturday = 6, sunday = 7
     
     func longFormat() -> String {
         switch self {
