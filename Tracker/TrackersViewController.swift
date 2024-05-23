@@ -108,12 +108,12 @@ class TrackersViewController: UIViewController {
 }
 
 extension TrackersViewController: UICollectionViewDataSource {
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 10/*newCategories.count*/
-//    }
-//    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1/*newCategories.count*/
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10/*newCategories[section].trackers.count*/
+        return 2/*newCategories[section].trackers.count*/
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -122,15 +122,22 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configCell()
-        
         return cell
     }
     
 }
 
 extension TrackersViewController: UICollectionViewDelegate {
+}
+
+extension TrackersViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: view.frame.width / 2 - 16, height: 90)
+    }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
 }
 
 
