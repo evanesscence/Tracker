@@ -3,22 +3,105 @@ import UIKit
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let reusedIdentifier = "TrackerCollectionViewCell"
     
-    var label = UILabel()
+    var background = UIView()
+    var emoji = UILabel()
+    var emojiView = UIView()
+    var eventInfo = UILabel()
+
+    var daysCount = UILabel()
+    var completeButton = UIButton()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.backgroundColor = .orange
-        contentView.layer.cornerRadius = 16
+        contentView.addSubview(background)
+        contentView.addSubview(daysCount)
+        contentView.addSubview(completeButton)
         
-        addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        background.addSubview(emojiView)
+        background.addSubview(eventInfo)
+        emojiView.addSubview(emoji)
+    
+        
+        
+        emoji.translatesAutoresizingMaskIntoConstraints = false
+        emojiView.translatesAutoresizingMaskIntoConstraints = false
+        background.translatesAutoresizingMaskIntoConstraints = false
+        eventInfo.translatesAutoresizingMaskIntoConstraints = false
+        daysCount.translatesAutoresizingMaskIntoConstraints = false
+        completeButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            background.topAnchor.constraint(equalTo: contentView.topAnchor),
+            background.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            background.heightAnchor.constraint(equalToConstant: 90)
         ])
         
+        NSLayoutConstraint.activate([
+            emojiView.heightAnchor.constraint(equalToConstant: 24),
+            emojiView.widthAnchor.constraint(equalToConstant: 24),
+            emojiView.topAnchor.constraint(equalTo: background.topAnchor, constant: 12),
+            emojiView.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 12)
+        ])
+        
+        NSLayoutConstraint.activate([
+            eventInfo.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 12),
+            eventInfo.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -12),
+            eventInfo.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -12),
+        ])
+        
+        
+        NSLayoutConstraint.activate([
+            emoji.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
+            emoji.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
+        ])
+        
+       
+        
+        NSLayoutConstraint.activate([
+            completeButton.heightAnchor.constraint(equalToConstant: 34),
+            completeButton.widthAnchor.constraint(equalToConstant: 34),
+            completeButton.topAnchor.constraint(equalTo: background.bottomAnchor, constant: 8),
+            completeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+        ])
+        
+        NSLayoutConstraint.activate([
+            daysCount.topAnchor.constraint(equalTo: background.bottomAnchor, constant: 16),
+            daysCount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+           
+        ])
+        
+        background.backgroundColor = .purple
+        background.layer.cornerRadius = 16
+        background.layer.masksToBounds = true
+        
+        emojiView.backgroundColor = .tWhite30
+        emojiView.frame.size = CGSize(width: 24, height: 24)
+        emojiView.layer.cornerRadius = emojiView.frame.size.width / 2
+        emojiView.layer.masksToBounds = true
+        
+        emoji.text = "🌺"
+        emoji.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        
+        eventInfo.text = "Бабушка прислала открытку в вотсапе"
+        eventInfo.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        eventInfo.textColor = .tWhite
+        eventInfo.numberOfLines = 2
+       
+        
+        daysCount.text = "1 день"
+        daysCount.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        daysCount.textColor = .tBlack
+    
+        
+        completeButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        completeButton.tintColor = .tWhite
+        completeButton.backgroundColor = .systemPink
+        completeButton.frame.size = CGSize(width: 34, height: 34)
+        completeButton.layer.cornerRadius = completeButton.frame.width / 2
+        completeButton.layer.masksToBounds = true
     }
     
     required init?(coder: NSCoder) {
