@@ -29,6 +29,9 @@ class EventsController: UIViewController {
     private let trackerLabelTextField = TextField()
     private var properties = [String]()
     private var selectedDays: String?
+    private var cancelButton = UIButton()
+    private var createButton = UIButton()
+    private var buttonsContainer = UIStackView()
     
     private let eventPropertiesTable = {
         let tableView = UITableView()
@@ -51,6 +54,7 @@ class EventsController: UIViewController {
         trackerLabelTextFieldConfig()
         eventPropertiesTableConfig()
         collectionViewConfig()
+        setupButtons()
     }
     
     private func setupEventData() {
@@ -118,6 +122,45 @@ class EventsController: UIViewController {
         collectionView.delegate = self
     }
     
+    private func setupButtons() {
+        buttonsContainer.axis = .horizontal
+        buttonsContainer.spacing = 8
+    
+        buttonsContainer.distribution = .fillEqually
+        
+        cancelButton.setTitle("Отмена", for: .normal)
+        cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        cancelButton.backgroundColor = .tWhite
+        cancelButton.setTitleColor(.tRed, for: .normal)
+        cancelButton.layer.borderColor = UIColor.tRed.cgColor
+        cancelButton.layer.borderWidth = 1
+        cancelButton.layer.cornerRadius = 16
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+       
+        createButton.setTitle("Создать", for: .normal)
+        createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        createButton.backgroundColor = .tTextFieldLabel
+        createButton.setTitleColor(.tWhite, for: .normal)
+        createButton.layer.cornerRadius = 16
+        
+        view.addSubview(buttonsContainer)
+        buttonsContainer.addArrangedSubview(cancelButton)
+        buttonsContainer.addArrangedSubview(createButton)
+        
+        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        createButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            buttonsContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            buttonsContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            buttonsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            buttonsContainer.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+       
+    }
+    
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
         if property == Properties.category.rawValue {
@@ -131,6 +174,11 @@ class EventsController: UIViewController {
             vc = scheduleController
         }
         return vc
+    }
+    
+    @objc
+    private func cancelButtonTapped() {
+        self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
 }
 
