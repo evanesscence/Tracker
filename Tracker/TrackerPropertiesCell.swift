@@ -4,6 +4,7 @@ struct TrackerPropertiesModel {
     let title: String
     let image: UIImage
     let selectedDays: String?
+    let selectedCategory: String?
 }
 
 class TrackerPropertiesCell: UITableViewCell {
@@ -72,6 +73,8 @@ class TrackerPropertiesCell: UITableViewCell {
     func configCell(for cell: TrackerPropertiesModel) {
         if cell.title == Properties.sсhedule.rawValue {
             chosenPropertiesLabel.text = cell.selectedDays
+        } else {
+            chosenPropertiesLabel.text = cell.selectedCategory
         }
        
       

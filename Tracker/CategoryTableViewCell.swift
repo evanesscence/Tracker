@@ -1,6 +1,6 @@
 import UIKit
 
-final class NewCategoryTableViewCell: UITableViewCell {
+final class CategoryTableViewCell: UITableViewCell {
     static let reuseIdentifier = "NewCategoryTableViewCell"
     private let doneIcon = UIImageView()
     
@@ -11,6 +11,10 @@ final class NewCategoryTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupCell(for cell: UITableViewCell, with indexPath: IndexPath) {
+        
     }
     
     func shouldShowDoneIcon() {

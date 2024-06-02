@@ -6,6 +6,9 @@ class TrackersViewController: UIViewController {
     var newCategories: [TrackerCategory] = []
     
     private let searchBar = UISearchTextField()
+    private let searchBarContainer = UIStackView()
+    private let searchBarCancelButton = UIButton()
+    
     private var trackerCollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: TrackerCollectionViewCell.reusedIdentifier)
@@ -28,7 +31,11 @@ class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "AddButton"), style: .plain, target: self, action: #selector(createNewTracker))
+        
         navigationItem.leftBarButtonItem?.tintColor = .tBlack
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
@@ -36,20 +43,46 @@ class TrackersViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         
         
+        setupDefaultInfo()
+        setupSearchBar()
+        setupTrackerCollectionView()
+    }
+    
+    private func setupSearchBar() {
+        view.addSubview(searchBarContainer)
+        searchBarContainer.addArrangedSubview(searchBar)
+        searchBarContainer.addArrangedSubview(searchBarCancelButton)
+        
+        searchBarContainer.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBarCancelButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        searchBarContainer.axis = .horizontal
+        searchBarContainer.spacing = 5
+        searchBarContainer.alignment = .fill
+        searchBarContainer.distribution = .fill
         
         searchBar.placeholder = "Поиск"
         searchBar.backgroundColor = .tWhite
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-      
-        view.addSubview(searchBar)
+        searchBar.clearButtonMode = .never
+        searchBar.addTarget(self, action: #selector(searchBarTapped), for: .editingDidBegin)
+        
+        searchBarCancelButton.isHidden = true
+        searchBarCancelButton.setTitle("Отменить", for: .normal)
+        searchBarCancelButton.setTitleColor(.tBlue, for: .normal)
+        searchBarCancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        searchBarCancelButton.addTarget(self, action: #selector(searchBarCancelButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 7),
-            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16),
-            searchBar.heightAnchor.constraint(equalToConstant: 36)
+            searchBarContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            searchBarContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            searchBarContainer.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16),
+            searchBarContainer.heightAnchor.constraint(equalToConstant: 36),
+            searchBarCancelButton.heightAnchor.constraint(equalToConstant: 22)
         ])
-        
+    }
+    
+    private func setupDefaultInfo() {
         let defaultImage = UIImageView()
         defaultImage.image = UIImage(named: "TrackersDefault")
         defaultImage.translatesAutoresizingMaskIntoConstraints = false
@@ -75,8 +108,6 @@ class TrackersViewController: UIViewController {
             defaultText.centerXAnchor.constraint(equalTo: defaultImage.centerXAnchor),
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
         ])
-        
-        setupTrackerCollectionView()
     }
     
     private func setupTrackerCollectionView() {
@@ -104,8 +135,23 @@ class TrackersViewController: UIViewController {
     }
     
     @objc func createNewTracker() {
-        let newTracker = UINavigationController(rootViewController: NewTrackerController()) 
+        let newTracker = UINavigationController(rootViewController: NewTrackerController())
         present(newTracker, animated: true, completion: nil)
+    }
+    
+    @objc func searchBarTapped() {
+        searchBarCancelButton.isHidden = false
+    }
+    
+    @objc func searchBarCancelButtonTapped() {
+        searchBarCancelButton.isHidden = true
+        searchBar.placeholder = "Поиск"
+        searchBar.text = ""
+        searchBar.endEditing(true)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

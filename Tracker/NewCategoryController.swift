@@ -1,13 +1,9 @@
 import UIKit
 
 final class NewCategoryController: UIViewController {
-    private let categories = ["Важное", "Радостные мелочи", "Домашние дела"]
-    private let categoriesTableView = {
-        let tableView = UITableView()
-        tableView.register(NewCategoryTableViewCell.self, forCellReuseIdentifier: NewCategoryTableViewCell.reuseIdentifier)
-        return tableView
-    }()
-    
+    weak var delegate: CategoriesControllerProtocol?
+    private var newCategory: String?
+    private let trackerLabelTextField = TextField()
     private let confirmButton = DarkButton(title: "Готово")
     
     override func viewDidLoad() {
@@ -15,10 +11,12 @@ final class NewCategoryController: UIViewController {
         view.backgroundColor = .white
         
         setupConfirmButton()
-        setupCategoryTableView()
+        trackerLabelTextFieldConfig()
     }
     
     private func setupConfirmButton() {
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
+        
         view.addSubview(confirmButton)
         confirmButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -29,58 +27,37 @@ final class NewCategoryController: UIViewController {
         ])
     }
     
-    private func setupCategoryTableView() {
-        categoriesTableView.layer.cornerRadius = 16
-        categoriesTableView.clipsToBounds = true
-        categoriesTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-
-        view.addSubview(categoriesTableView)
-        categoriesTableView.translatesAutoresizingMaskIntoConstraints = false
+    private func trackerLabelTextFieldConfig() {
+        trackerLabelTextField.addTarget(self, action: #selector(trackerLabelTextFieldChanged(_:)), for: .editingChanged)
+        view.addSubview(trackerLabelTextField)
+        trackerLabelTextField.translatesAutoresizingMaskIntoConstraints = false
+        trackerLabelTextField.backgroundColor = .tLightGray30
+        trackerLabelTextField.layer.cornerRadius = 16
+        trackerLabelTextField.placeholder = "Введите название категории"
+        trackerLabelTextField.textColor = .tBlack
+        trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        
         
         NSLayoutConstraint.activate([
-            categoriesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            categoriesTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            categoriesTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            categoriesTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categories.count))
+            trackerLabelTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            trackerLabelTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            trackerLabelTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            trackerLabelTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
-        
-        categoriesTableView.dataSource = self
-        categoriesTableView.delegate = self
-        
-    }
-}
-
-extension NewCategoryController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? NewCategoryTableViewCell else {
-            print("err")
-            return
+    @objc
+    private func confirmButtonTapped() {
+        if let newCategory = newCategory {
+            delegate?.newCategoryWasAdded(with: newCategory)
         }
-        cell.selectionStyle = .none
-        cell.shouldShowDoneIcon()
-        categoriesTableView.deselectRow(at: indexPath, animated: true)
+        dismiss(animated: true)
     }
+    
+    @objc
+    private func trackerLabelTextFieldChanged(_ textField: UITextField) {
+        newCategory = textField.text
+    }
+
 }
 
-extension NewCategoryController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: NewCategoryTableViewCell.reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = categories[indexPath.row]
-        
-        if indexPath.row == categories.count-1 {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-            }
-        
-        return cell
-    }
-    
-    
-}

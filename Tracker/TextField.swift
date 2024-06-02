@@ -22,4 +22,8 @@ final class TextField: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         bounds.inset(by: padding)
     }
+    
+    override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
+        return CGRect(x: bounds.width/2-26, y: bounds.origin.y, width: bounds.size.width, height: bounds.size.height)
+    }
 }
