@@ -1,7 +1,7 @@
 import UIKit
 
 final class TrackerHeaderCollectionView: UICollectionReusableView {
-    let categoryName = UILabel()
+    private let categoryName = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -17,6 +17,10 @@ final class TrackerHeaderCollectionView: UICollectionReusableView {
             categoryName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             categoryName.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    func configSectionTitle(for header: TrackerCategory) {
+        categoryName.text = header.name
     }
     
     required init?(coder: NSCoder) {

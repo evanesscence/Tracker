@@ -96,12 +96,22 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         daysCount.textColor = .tBlack
     
         
-        completeButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        let completeButtonConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold, scale: .large)
+        let completeButtonImage = UIImage(systemName: "plus", withConfiguration: completeButtonConfig)
+        
+        completeButton.setImage(completeButtonImage, for: .normal)
         completeButton.tintColor = .tWhite
         completeButton.backgroundColor = .systemPink
         completeButton.frame.size = CGSize(width: 34, height: 34)
         completeButton.layer.cornerRadius = completeButton.frame.width / 2
         completeButton.layer.masksToBounds = true
+    }
+    
+    func configTracker(for cell: Tracker) {
+        background.backgroundColor = cell.color
+        completeButton.backgroundColor = cell.color
+        emoji.text = cell.emoji
+        eventInfo.text = cell.name
     }
     
     required init?(coder: NSCoder) {

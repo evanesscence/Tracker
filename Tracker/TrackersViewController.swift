@@ -1,13 +1,17 @@
 import UIKit
 
 class TrackersViewController: UIViewController {
-    var categories: [TrackerCategory] = []
+    private let dataManager = DataManager.shared
+    
     var completedTrackers: [TrackerRecord] = []
-    var newCategories: [TrackerCategory] = []
+    var categories: [TrackerCategory] = []
+    var visibleCategories: [TrackerCategory] = []
     
     private let searchBar = UISearchTextField()
     private let searchBarContainer = UIStackView()
     private let searchBarCancelButton = UIButton()
+    private let addButton = UIButton()
+    private let datePickerLabel = UILabel()
     
     private var trackerCollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -22,10 +26,17 @@ class TrackersViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.locale = Locale(identifier: "ru_RU")
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.widthAnchor.constraint(equalToConstant: 120).isActive = true 
+        datePicker.widthAnchor.constraint(equalToConstant: 77).isActive = true
         datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
         
         return datePicker
+    }()
+    
+    private lazy var dateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "dd.MM.yy"
+        return formatter
     }()
     
     override func viewDidLoad() {
@@ -34,18 +45,60 @@ class TrackersViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         view.addGestureRecognizer(tap)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "AddButton"), style: .plain, target: self, action: #selector(createNewTracker))
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addButton)
         navigationItem.leftBarButtonItem?.tintColor = .tBlack
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         title = "Трекеры"
+        navigationController?.navigationBar.largeTitleTextAttributes = [.font: UIFont.systemFont(ofSize: 34, weight: .bold), .foregroundColor: UIColor.tBlack]
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        
+        reloadData()
         setupDefaultInfo()
         setupSearchBar()
+        setupAddButton()
+        setupDatePickerLabel()
         setupTrackerCollectionView()
+    }
+    
+    private func reloadData() {
+        categories = dataManager.categories
+        datePickerValueChanged()
+    }
+    
+    private func setupAddButton() {
+        view.addSubview(addButton)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+       
+        addButton.setImage(UIImage(named: "AddButton"), for: .normal)
+        addButton.addTarget(self, action: #selector(createNewTracker), for: .touchUpInside)
+        
+        NSLayoutConstraint.activate([
+            addButton.heightAnchor.constraint(equalToConstant: 42),
+            addButton.heightAnchor.constraint(equalToConstant: 42)
+        ])
+    }
+    
+    private func setupDatePickerLabel() {
+        datePickerLabel.text = dateFormatter.string(from: Date())
+        datePickerLabel.layer.cornerRadius = 8
+        datePickerLabel.layer.masksToBounds = true
+        
+        datePickerLabel.textAlignment = .center
+        datePickerLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        datePickerLabel.backgroundColor = .tGray
+        datePickerLabel.textColor = .tBlack
+        
+        view.addSubview(datePicker)
+        datePicker.addSubview(datePickerLabel)
+        datePickerLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            datePickerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 58),
+            datePickerLabel.heightAnchor.constraint(equalToConstant: 34),
+            datePickerLabel.widthAnchor.constraint(equalToConstant: 80)
+        ])
     }
     
     private func setupSearchBar() {
@@ -111,12 +164,13 @@ class TrackersViewController: UIViewController {
     }
     
     private func setupTrackerCollectionView() {
+        trackerCollectionView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         trackerCollectionView.showsVerticalScrollIndicator = false
         view.addSubview(trackerCollectionView)
         trackerCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            trackerCollectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 34),
+            trackerCollectionView.topAnchor.constraint(equalTo: searchBarContainer.bottomAnchor, constant: 10),
             trackerCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             trackerCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -126,14 +180,31 @@ class TrackersViewController: UIViewController {
         trackerCollectionView.dataSource = self
     }
     
-    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-        let selectedDate = sender.date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
-        let formattedDate = dateFormatter.string(from: selectedDate)
-        print("Выбранная дата: \(formattedDate)")
+    @objc func datePickerValueChanged() {
+        let calendar = Calendar.current
+        let filterWeekDay = calendar.component(.weekday, from: datePicker.date)
+        
+        visibleCategories = categories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                tracker.schedule.contains { weekDay in
+                    weekDay.day.rawValue == filterWeekDay
+                }
+            }
+            
+            if trackers.isEmpty {
+                return nil
+            }
+            
+            return TrackerCategory(
+                name: category.name,
+                trackers: trackers
+            )
+        }
+        
+        trackerCollectionView.reloadData()
+        
     }
-    
+        
     @objc func createNewTracker() {
         let newTracker = UINavigationController(rootViewController: NewTrackerController())
         present(newTracker, animated: true, completion: nil)
@@ -151,17 +222,19 @@ class TrackersViewController: UIViewController {
     }
     
     @objc func dismissKeyboard() {
+        searchBarCancelButton.isHidden = true
         view.endEditing(true)
     }
 }
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5/*newCategories.count*/
+        return visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2/*newCategories[section].trackers.count*/
+        let trackers = visibleCategories[section].trackers
+        return trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -169,6 +242,9 @@ extension TrackersViewController: UICollectionViewDataSource {
             print("err")
             return UICollectionViewCell()
         }
+        
+        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+        cell.configTracker(for: tracker)
         
         return cell
     }
@@ -178,13 +254,16 @@ extension TrackersViewController: UICollectionViewDataSource {
             print("err")
             return UICollectionReusableView()
         }
+        let sectionTitle = visibleCategories[indexPath.section]
+        section.configSectionTitle(for: sectionTitle)
+        
         return section
     }
 }
 
 extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
+        UIEdgeInsets(top: 12, left: 0, bottom: 16, right: 0)
     }
 }
 
