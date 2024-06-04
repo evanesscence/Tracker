@@ -1,5 +1,9 @@
 import UIKit
 
+protocol TrackersViewControllerDelegate: AnyObject {
+    func createdNewTracker(tracker: TrackerCategory)
+}
+
 class TrackersViewController: UIViewController {
     private let dataManager = DataManager.shared
     
@@ -226,8 +230,9 @@ class TrackersViewController: UIViewController {
     }
         
     @objc func createNewTracker() {
-        let newTracker = UINavigationController(rootViewController: NewTrackerController())
-        present(newTracker, animated: true, completion: nil)
+        let newTracker = NewTrackerController()
+        newTracker.delegate = self
+        present(UINavigationController(rootViewController: newTracker), animated: true, completion: nil)
     }
     
     
@@ -352,6 +357,12 @@ extension TrackersViewController: UITextFieldDelegate {
         reloadVisibleCategroies()
         
         return true
+    }
+}
+
+extension TrackersViewController: TrackersViewControllerDelegate {
+    func createdNewTracker(tracker: TrackerCategory) {
+        categories.append(tracker)
     }
 }
 

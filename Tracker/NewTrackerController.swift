@@ -1,6 +1,11 @@
 import UIKit
 
+protocol NewTrackerViewControllerDelegate: AnyObject {
+    func createdNewTracker(tracker: TrackerCategory)
+}
+
 class NewTrackerController: UIViewController {
+    weak var delegate: TrackersViewControllerDelegate?
     private let habbitButton = UIButton()
     private let irregularEventButton = UIButton()
     
@@ -47,12 +52,20 @@ class NewTrackerController: UIViewController {
     }
     
     @objc private func addHabbit() {
-        let eventsController = UINavigationController(rootViewController: EventsController(type: .habbit))
-        present(eventsController, animated: true, completion: nil)
+        let eventsController = EventsController(type: .habbit)
+        eventsController.delegate = self
+        present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
     }
     
     @objc private func addIrregularEvent() {
-        let eventsController = UINavigationController(rootViewController: EventsController(type: .irregularEvent))
-        present(eventsController, animated: true, completion: nil)
+        let eventsController = EventsController(type: .irregularEvent)
+        eventsController.delegate = self
+        present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
+    }
+}
+
+extension NewTrackerController: NewTrackerViewControllerDelegate {
+    func createdNewTracker(tracker: TrackerCategory) {
+        delegate?.createdNewTracker(tracker: tracker)
     }
 }

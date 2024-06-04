@@ -16,7 +16,7 @@ enum Properties: String, CaseIterable {
 }
 
 class EventsController: UIViewController {
-//    let emoji = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🍄"]
+    let emoji = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🍄"]
     var type: TypeOfEvent
     init(type: TypeOfEvent) {
         self.type = type
@@ -27,9 +27,12 @@ class EventsController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    weak var delegate: NewTrackerViewControllerDelegate?
+    
     private var properties = [String]()
     private var selectedDays: String?
     private var selectedCategory: String?
+    private var schedule: [DaysOfWeek]?
     
     private let trackerLabelTextField = TextField()
     private let hintOfTextField = UILabel()
@@ -262,6 +265,33 @@ class EventsController: UIViewController {
     
     @objc
     private func createButtonTapped() {
+        if type == .habbit {
+            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule else { return }
+            let newHabbit = TrackerCategory(
+                name: selectedCategory,
+                trackers:
+                    [Tracker(
+                        id: UUID(),
+                        name: trackerName,
+                        color: .tMildBlue,
+                        emoji: emoji.randomElement() ?? "🍉",
+                        schedule: schedule)
+                    ])
+            delegate?.createdNewTracker(tracker: newHabbit)
+        } else {
+            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text else { return }
+            let newHabbit = TrackerCategory(
+                name: selectedCategory,
+                trackers:
+                    [Tracker(
+                        id: UUID(),
+                        name: trackerName,
+                        color: .tMildBlue,
+                        emoji: emoji.randomElement() ?? "🍉",
+                        schedule: schedule!)
+                    ])
+            delegate?.createdNewTracker(tracker: newHabbit)
+        }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
 }
@@ -353,6 +383,8 @@ extension EventsController: EventsControllerProtocol {
             selectedDays = "Каждый день"
         } else {
             selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")
+            schedule = days
+            print(schedule)
         }
         
         didSelectedDays.toggle()
