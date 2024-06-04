@@ -1,7 +1,17 @@
 import UIKit
 
+protocol TrackerCollectionViewCellProtocol: AnyObject {
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+}
+
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let reusedIdentifier = "TrackerCollectionViewCell"
+    
+    weak var delegate: TrackerCollectionViewCellProtocol?
+    private var isCompletedToday: Bool = false
+    private var trackerId: UUID?
+    private var indexPath: IndexPath?
     
     var background = UIView()
     var emoji = UILabel()
@@ -11,6 +21,13 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     var daysCount = UILabel()
     var completeButton = UIButton()
     
+    private let plusImage: UIImage = {
+        let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
+        let image = UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
+        return image
+    }()
+    
+    private let doneImage = UIImage(named: "DoneButton")
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -90,28 +107,61 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         eventInfo.textColor = .tWhite
         eventInfo.numberOfLines = 2
        
-        
-        daysCount.text = "1 день"
         daysCount.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         daysCount.textColor = .tBlack
     
+        setupCompleteButton()
+    }
+    
+    func configTracker(for cell: Tracker, isCompletedToday: Bool, completedDays: Int, at indexPath: IndexPath) {
+        trackerId = cell.id
+        self.indexPath = indexPath
+        self.isCompletedToday = isCompletedToday
         
-        let completeButtonConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold, scale: .large)
-        let completeButtonImage = UIImage(systemName: "plus", withConfiguration: completeButtonConfig)
+        background.backgroundColor = cell.color
+        completeButton.backgroundColor = cell.color
+        emoji.text = cell.emoji
+        eventInfo.text = cell.name
+        daysCount.text = wordDay(for: completedDays)
         
-        completeButton.setImage(completeButtonImage, for: .normal)
+        let image = isCompletedToday ? doneImage : plusImage
+        let opacity = isCompletedToday ? 0.3 : 1
+        
+        completeButton.layer.opacity = Float(opacity)
+        completeButton.setImage(image, for: .normal)
+    }
+    
+    func setupCompleteButton() {
         completeButton.tintColor = .tWhite
         completeButton.backgroundColor = .systemPink
         completeButton.frame.size = CGSize(width: 34, height: 34)
         completeButton.layer.cornerRadius = completeButton.frame.width / 2
         completeButton.layer.masksToBounds = true
+        
+        completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
     }
     
-    func configTracker(for cell: Tracker) {
-        background.backgroundColor = cell.color
-        completeButton.backgroundColor = cell.color
-        emoji.text = cell.emoji
-        eventInfo.text = cell.name
+    private func wordDay(for number: Int) -> String {
+        var word = "\(number) "
+        switch number {
+        case 1, 21, 31:
+            word += "день"
+            break
+        case 2, 3, 4, 22, 23, 24:
+            word += "дня"
+            break
+        default:
+            word += "дней"
+            break
+        }
+        
+        return word
+    }
+    
+    @objc
+    private func completeButtonTapped() {
+        guard let trackerId = trackerId, let indexPath = indexPath else { return }
+        isCompletedToday ? delegate?.uncompleteTracker(id: trackerId, at: indexPath) : delegate?.completeTracker(id: trackerId, at: indexPath)
     }
     
     required init?(coder: NSCoder) {
