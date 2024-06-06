@@ -122,7 +122,13 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         completeButton.backgroundColor = cell.color
         emoji.text = cell.emoji
         eventInfo.text = cell.name
-        daysCount.text = wordDay(for: completedDays)
+        
+        if !cell.schedule.isEmpty {
+            daysCount.text = wordDay(for: completedDays)
+        } else {
+            daysCount.text = "Только сегодня"
+        }
+        
         
         let image = isCompletedToday ? doneImage : plusImage
         let opacity = isCompletedToday ? 0.3 : 1

@@ -288,7 +288,7 @@ class EventsController: UIViewController {
                         name: trackerName,
                         color: .tMildBlue,
                         emoji: emoji.randomElement() ?? "🍉",
-                        schedule: schedule!)
+                        schedule: [])
                     ])
             delegate?.createdNewTracker(tracker: newHabbit)
         }
@@ -373,7 +373,7 @@ extension EventsController: EventsControllerProtocol {
     func didConfirm(with category: TrackerCategory) {
         selectedCategory = category.name
         
-        didSelectedCategory.toggle()
+        didSelectedCategory = true
         createButtonIsEnabled()
         eventPropertiesTable.reloadData()
     }
@@ -381,13 +381,13 @@ extension EventsController: EventsControllerProtocol {
     func didConfirm(with days: [DaysOfWeek]) {
         if days.count == 7 {
             selectedDays = "Каждый день"
+            
         } else {
             selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")
-            schedule = days
-            print(schedule)
         }
         
-        didSelectedDays.toggle()
+        schedule = days
+        didSelectedDays = true
         createButtonIsEnabled()
         eventPropertiesTable.reloadData()
     }

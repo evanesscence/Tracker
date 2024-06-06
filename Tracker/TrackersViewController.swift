@@ -193,6 +193,7 @@ class TrackersViewController: UIViewController {
     private func reloadVisibleCategroies() {
         let calendar = Calendar.current
         let filterWeekDay = calendar.component(.weekday, from: datePicker.date)
+        let filterDay = calendar.component(.day, from: datePicker.date)
       
         let filterText = (searchBar.text ?? "").lowercased()
         
@@ -203,7 +204,11 @@ class TrackersViewController: UIViewController {
                     weekDay.day.rawValue == filterWeekDay
                 }
                 
-                return textCondition && dateCondition
+                let currentDay = Calendar.current.dateComponents([.day], from: Date()).day
+                let irregularTracker = tracker.schedule.isEmpty ? currentDay : 0
+                let irregularTrackerDay = filterDay == irregularTracker
+                
+                return textCondition && (dateCondition || irregularTrackerDay)
             }
             
             if trackers.isEmpty {
@@ -363,6 +368,7 @@ extension TrackersViewController: UITextFieldDelegate {
 extension TrackersViewController: TrackersViewControllerDelegate {
     func createdNewTracker(tracker: TrackerCategory) {
         categories.append(tracker)
+        reloadVisibleCategroies()
     }
 }
 
