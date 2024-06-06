@@ -12,9 +12,11 @@ final class NewCategoryController: UIViewController {
         
         setupConfirmButton()
         trackerLabelTextFieldConfig()
+        setupToHideKeyboardOnTapOnView()
     }
     
     private func setupConfirmButton() {
+        confirmButton.backgroundColor = .tTextFieldLabel
         confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         
         view.addSubview(confirmButton)
@@ -36,6 +38,7 @@ final class NewCategoryController: UIViewController {
         trackerLabelTextField.placeholder = "Введите название категории"
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        trackerLabelTextField.clearButtonMode = .whileEditing
         
         
         NSLayoutConstraint.activate([
@@ -44,6 +47,33 @@ final class NewCategoryController: UIViewController {
             trackerLabelTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             trackerLabelTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
+    }
+    
+    private func confirmButtonIsEnabled() {
+        if trackerLabelTextField.hasText {
+            confirmButton.backgroundColor = .tBlack
+            confirmButton.isEnabled = true
+        }
+        
+        else {
+            confirmButton.isEnabled = false
+            confirmButton.backgroundColor = .tTextFieldLabel
+        }
+        
+    }
+    
+    private func setupToHideKeyboardOnTapOnView() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.dismissKeyboard))
+        
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc
+    private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc
@@ -57,6 +87,7 @@ final class NewCategoryController: UIViewController {
     @objc
     private func trackerLabelTextFieldChanged(_ textField: UITextField) {
         newCategory = textField.text
+        confirmButtonIsEnabled()
     }
 
 }
