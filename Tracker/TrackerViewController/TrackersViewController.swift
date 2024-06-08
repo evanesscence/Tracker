@@ -6,10 +6,11 @@ protocol TrackersViewControllerDelegate: AnyObject {
 
 class TrackersViewController: UIViewController {
     private let dataManager = DataManager.shared
-    
+
     var completedTrackers: [TrackerRecord] = []
     var categories: [TrackerCategory] = []
     var visibleCategories: [TrackerCategory] = []
+    var isTomorrow = false
     
     private lazy var searchBar: UISearchTextField = {
         let textField = UISearchTextField()
@@ -230,6 +231,7 @@ class TrackersViewController: UIViewController {
     }
     
     @objc func datePickerValueChanged() {
+        isTomorrow = Date() < datePicker.date ? true : false
         datePickerLabel.text = dateFormatter.string(from: datePicker.date)
         reloadVisibleCategroies()
     }
@@ -294,8 +296,9 @@ extension TrackersViewController: UICollectionViewDataSource {
         let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
         let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
         
+        
         cell.delegate = self
-        cell.configTracker(for: tracker, isCompletedToday: isCompletedToday, completedDays: completedDays, at: indexPath)
+        cell.configTracker(for: tracker, isCompletedToday: isCompletedToday, completedDays: completedDays, at: indexPath, isTomorrow: isTomorrow)
         
         return cell
     }

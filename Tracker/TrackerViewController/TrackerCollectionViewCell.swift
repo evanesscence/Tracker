@@ -113,7 +113,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         setupCompleteButton()
     }
     
-    func configTracker(for cell: Tracker, isCompletedToday: Bool, completedDays: Int, at indexPath: IndexPath) {
+    func configTracker(for cell: Tracker, isCompletedToday: Bool, completedDays: Int, at indexPath: IndexPath, isTomorrow: Bool) {
         trackerId = cell.id
         self.indexPath = indexPath
         self.isCompletedToday = isCompletedToday
@@ -131,10 +131,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         
         let image = isCompletedToday ? doneImage : plusImage
-        let opacity = isCompletedToday ? 0.3 : 1
+        let opacity = isCompletedToday || isTomorrow ? 0.3 : 1
         
         completeButton.layer.opacity = Float(opacity)
         completeButton.setImage(image, for: .normal)
+        completeButton.isEnabled = !isTomorrow
     }
     
     func setupCompleteButton() {
