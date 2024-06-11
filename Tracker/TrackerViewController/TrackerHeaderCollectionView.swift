@@ -23,6 +23,10 @@ final class TrackerHeaderCollectionView: UICollectionReusableView {
         categoryName.text = header.name
     }
     
+    func configSectionTitle(for header: String) {
+        categoryName.text = header
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

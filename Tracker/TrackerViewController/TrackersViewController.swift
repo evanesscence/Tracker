@@ -231,7 +231,14 @@ class TrackersViewController: UIViewController {
     }
     
     @objc func datePickerValueChanged() {
-        isTomorrow = Date() < datePicker.date ? true : false
+        if Date() >= datePicker.date {
+            isTomorrow = true
+        } else if Date() < datePicker.date {
+            isTomorrow = false
+        } else {
+            isTomorrow = true
+        }
+        
         datePickerLabel.text = dateFormatter.string(from: datePicker.date)
         reloadVisibleCategroies()
     }

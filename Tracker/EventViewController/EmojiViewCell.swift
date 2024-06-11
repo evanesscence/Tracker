@@ -15,6 +15,16 @@ class EmojiViewCell: UICollectionViewCell {
         ])
     }
     
+    func didtapped() {
+        backgroundColor = UIColor.tLightGray1
+        layer.cornerRadius = 16
+        layer.masksToBounds = true
+    }
+    
+    func deselect() {
+        backgroundColor = .none
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
