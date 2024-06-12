@@ -33,6 +33,8 @@ class EventsController: UIViewController {
     private var properties = [String]()
     private var selectedDays: String?
     private var selectedCategory: String?
+    private var selectedEmoji: String?
+    private var selectedColor: String?
     private var schedule: [DaysOfWeek]?
     
     private let contentView = UIView()
@@ -48,6 +50,8 @@ class EventsController: UIViewController {
     
     private var didSelectedDays = false
     private var didSelectedCategory = false
+    private var didSelectedEmoji = false
+    private var didSelectedColor = false
     
     private let eventPropertiesTable = {
         let tableView = UITableView()
@@ -176,6 +180,7 @@ class EventsController: UIViewController {
     }
  //
     private func collectionViewConfig() {
+        collectionView.allowsMultipleSelection = true
         contentView.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isScrollEnabled = false
@@ -249,13 +254,13 @@ class EventsController: UIViewController {
     }
     
     private func createButtonIsEnabled() {
-        if (type == .habbit) && (didSelectedDays) && (didSelectedCategory) && (trackerLabelTextField.hasText)
+        if (type == .habbit) && (didSelectedDays) && (didSelectedCategory) && (trackerLabelTextField.hasText) && (didSelectedEmoji) && (didSelectedColor)
         {
             createButton.isEnabled = true
             createButton.backgroundColor = .tBlack
         }
         
-        else if (type == .irregularEvent) && (didSelectedCategory) && (trackerLabelTextField.hasText) {
+        else if (type == .irregularEvent) && (didSelectedCategory) && (trackerLabelTextField.hasText) && (didSelectedEmoji) && (didSelectedColor) && (didSelectedEmoji) && (didSelectedColor) {
             createButton.isEnabled = true
             createButton.backgroundColor = .tBlack
         }
@@ -294,28 +299,28 @@ class EventsController: UIViewController {
     @objc
     private func createButtonTapped() {
         if type == .habbit {
-            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule else { return }
+            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             let newHabbit = TrackerCategory(
                 name: selectedCategory,
                 trackers:
                     [Tracker(
                         id: UUID(),
                         name: trackerName,
-                        color: .tMildBlue,
-                        emoji: "🍉",
+                        color: UIColor(hexString: selectedColor),
+                        emoji: selectedEmoji,
                         schedule: schedule)
                     ])
             delegate?.createdNewTracker(tracker: newHabbit)
         } else {
-            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text else { return }
+            guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             let newHabbit = TrackerCategory(
                 name: selectedCategory,
                 trackers:
                     [Tracker(
                         id: UUID(),
                         name: trackerName,
-                        color: .tMildBlue,
-                        emoji: "🍉",
+                        color: UIColor(hexString: selectedColor),
+                        emoji: selectedEmoji,
                         schedule: [])
                     ])
             delegate?.createdNewTracker(tracker: newHabbit)
@@ -341,28 +346,6 @@ extension EventsController: UITextFieldDelegate {
 }
 
 extension EventsController: UITableViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell {
-            cell.didtapped()
-            collectionView.allowsMultipleSelection = false
-        }
-        
-        if let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell {
-           
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell {
-            cell.deselect()
-            print("j")
-        }
-        
-        if let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell {
-           
-        }
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         properties.count
     }
@@ -434,6 +417,32 @@ extension EventsController: UICollectionViewDelegateFlowLayout {
 
 
 extension EventsController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        let section = collectionElements[indexPath.section]
+        if section.elementsName == "Emoji" {
+            selectedEmoji = section.elements[indexPath.row]
+            didSelectedEmoji = true
+        } else {
+            selectedColor = section.elements[indexPath.row]
+            didSelectedColor = true
+        }
+        
+        collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section }).forEach({ collectionView.deselectItem(at: $0, animated: false)})
+        
+        createButtonIsEnabled()
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let section = collectionElements[indexPath.section]
+        if section.elementsName == "Emoji" {
+            didSelectedEmoji = false
+        } else {
+            didSelectedColor = false
+        }
+        createButtonIsEnabled()
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionElements.count
     }
@@ -503,3 +512,4 @@ extension EventsController: EventsControllerProtocol {
         eventPropertiesTable.reloadData()
     }
 }
+

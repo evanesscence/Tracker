@@ -3,6 +3,12 @@ import UIKit
 class EmojiViewCell: UICollectionViewCell {
     let emoji = UILabel()
     
+    override var isSelected: Bool {
+        didSet {
+            isSelected ? setupSelectedCell() : setupDeselectedCell()
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -15,14 +21,14 @@ class EmojiViewCell: UICollectionViewCell {
         ])
     }
     
-    func didtapped() {
+    private func setupSelectedCell() {
         backgroundColor = UIColor.tLightGray1
         layer.cornerRadius = 16
         layer.masksToBounds = true
     }
     
-    func deselect() {
-        backgroundColor = .none
+    private func setupDeselectedCell() {
+        backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {

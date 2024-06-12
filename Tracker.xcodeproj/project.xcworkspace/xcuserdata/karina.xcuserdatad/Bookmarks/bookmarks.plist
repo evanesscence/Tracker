@@ -9,8 +9,6 @@
 			<dict>
 				<key>location-parameters</key>
 				<dict>
-					<key>CharacterRangeLoc</key>
-					<string>309</string>
 					<key>EndingColumnNumber</key>
 					<string>20</string>
 					<key>EndingLineNumber</key>
@@ -32,6 +30,20 @@
 						<string>Tracker/UIColor.swift</string>
 					</dict>
 				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>        let scanner = Scanner(string: hexString)
+        if (hexString.hasPrefix("#")) {
+            scanner.</string>
+				<key>trailing</key>
+				<string>scanLocation = 1
+        }
+        var color: UInt32 = 0
+</string>
 			</dict>
 			<key>title</key>
 			<string>Warning: 'scanLocation' was deprecated in iOS 13.0</string>
