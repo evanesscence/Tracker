@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let container = NSPersistentContainer(name: "TrackerCoreData")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as? NSError {
-                print("err")
+                print(error.localizedDescription)
             }
         })
         

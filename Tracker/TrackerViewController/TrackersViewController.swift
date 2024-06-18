@@ -53,6 +53,12 @@ class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        
+//        guard let day = Days(rawValue: 2) else { return }
+//        try? TrackerStore().add(tracker: Tracker(id: UUID(), name: "test", color: UIColor.black, emoji: "", schedule: [DaysOfWeek(day: day, isOn: true)]), with: "ddd")
+        
+        TrackerStore().fetch()
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         view.addGestureRecognizer(tap)
         
