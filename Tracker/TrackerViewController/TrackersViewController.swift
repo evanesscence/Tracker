@@ -53,11 +53,6 @@ class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        
-//        guard let day = Days(rawValue: 2) else { return }
-//        try? TrackerStore().add(tracker: Tracker(id: UUID(), name: "test", color: UIColor.black, emoji: "", schedule: [DaysOfWeek(day: day, isOn: true)]), with: "ddd")
-        
-        TrackerStore().fetch()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         view.addGestureRecognizer(tap)
@@ -80,7 +75,21 @@ class TrackersViewController: UIViewController {
     }
     
     private func reloadData() {
-        categories = dataManager.categories
+//        let newtrack = Tracker(id: UUID(), name: "Не психовать", color: UIColor.tPurple, emoji: "🧘🏻‍♀️", schedule: [DaysOfWeek(day: Days(rawValue: 1) ?? .friday, isOn: true)])
+//        
+//        try? TrackerStore().add(tracker: newtrack, with: "Невозможное")
+//        
+//        
+//        var a = [Tracker]()
+//        var new = [TrackerCategory]()
+//        
+//        guard var tr = dataProvider.fetchedResultsController.fetchedObjects else { return }
+//        tr.forEach {
+//            var tracker = Tracker(id: $0.id!, name: $0.name!, color: UIColor(hexString: $0.color!), emoji: $0.emoji!, schedule: TrackerStore().converToDay(days: $0.schedule))
+//            new.append(TrackerCategory(name: "Невозможное", trackers: [tracker]))
+//        }
+        
+        categories = []
         datePickerValueChanged()
     }
     

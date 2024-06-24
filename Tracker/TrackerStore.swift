@@ -1,7 +1,16 @@
 import UIKit
 import CoreData
 
-final class TrackerStore {
+protocol TrackerStoreProtocol: AnyObject {
+    func add(tracker: Tracker, with category: String) throws
+}
+
+private enum TrackerStoreError: Error {
+    case decodingErrorInvalidTracker
+}
+
+final class TrackerStore: TrackerStoreProtocol {
+    static let shared = TrackerStore()
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
@@ -20,11 +29,36 @@ final class TrackerStore {
         trackerCoreData.name = tracker.name
         trackerCoreData.emoji = tracker.emoji
         trackerCoreData.color = tracker.color.toHexString()
-        trackerCoreData.schedule = 2345
-    
-        try context.save()
+        trackerCoreData.schedule = convertToInt(schedule: tracker.schedule)
         
-        print(trackerCoreData.id)
+        if let trackerCategory = TrackerCategoryStore().fetchCategoryName(category) {
+            trackerCoreData.category = NSSet(object: trackerCategory)
+        }
+        
+        try context.save()
+    }
+    
+    func convertToTracker(_ trackerCoreData: TrackerCoreData) throws -> Tracker {
+        guard
+            let id = trackerCoreData.id,
+            let name = trackerCoreData.name,
+            let emoji = trackerCoreData.emoji,
+            let color = trackerCoreData.color
+        else {
+            throw TrackerStoreError.decodingErrorInvalidTracker
+        }
+        
+        let convertColor = UIColor(hexString: color)
+        let convertToDay = converToDay(days: trackerCoreData.schedule)
+        
+        let tracker = Tracker(
+            id: id,
+            name: name,
+            color: convertColor,
+            emoji: emoji,
+            schedule: convertToDay)
+        
+        return tracker
     }
     
     func convertToInt(schedule: [DaysOfWeek]) -> Int32 {
@@ -49,20 +83,17 @@ final class TrackerStore {
         
         return daysarr
     }
-    
-    func fetch() {
-        let fet = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCoreData")
-        fet.propertiesToFetch = ["name"]
-        fet.resultType = .dictionaryResultType
-            let book = try! context.execute(fet) as! NSAsynchronousFetchResult<NSFetchRequestResult>
-            print(book.finalResult)
-        
-    }
    
 }
 
 extension StringProtocol  {
     var digits: [Int] { compactMap(\.wholeNumberValue) }
+}
+
+extension TrackerStore: DataStoreProtocol {
+    var managedObjectContext: NSManagedObjectContext? {
+        context
+    }
 }
 
 

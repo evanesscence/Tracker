@@ -67,6 +67,14 @@ class EventsController: UIViewController {
         return collection
     }()
     
+    private lazy var dataProvider: TrackerStoreProtocol? = {
+        let trackerStore = TrackerStore.shared
+        let dataProvider = TrackerDataProvider(trackerStore)
+        
+        return dataProvider
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -299,7 +307,18 @@ class EventsController: UIViewController {
     @objc
     private func createButtonTapped() {
         if type == .habbit {
+            
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
+            
+            let newTracker = Tracker(
+                id: UUID(),
+                name: trackerName,
+                color: UIColor(hexString: selectedColor),
+                emoji: selectedEmoji,
+                schedule: schedule)
+            
+            try? dataProvider?.add(tracker: newTracker, with: selectedCategory)
+            
             let newHabbit = TrackerCategory(
                 name: selectedCategory,
                 trackers:
@@ -310,6 +329,7 @@ class EventsController: UIViewController {
                         emoji: selectedEmoji,
                         schedule: schedule)
                     ])
+            
             delegate?.createdNewTracker(tracker: newHabbit)
         } else {
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }

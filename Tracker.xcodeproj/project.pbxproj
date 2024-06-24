@@ -10,6 +10,7 @@
 		9A00CDD22C1C4A1E009728E1 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */; };
 		9A1ADF2F2C1DD37E00DDF523 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */; };
 		9A1ADF312C1DD3FE00DDF523 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */; };
+		9A2175F52C2706A3002CE0B1 /* TrackerDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */; };
 		9A310C132BE4CE42006A3F4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A310C122BE4CE42006A3F4D /* AppDelegate.swift */; };
 		9A310C152BE4CE42006A3F4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A310C142BE4CE42006A3F4D /* SceneDelegate.swift */; };
 		9A310C172BE4CE42006A3F4D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A310C162BE4CE42006A3F4D /* TabBarController.swift */; };
@@ -26,6 +27,7 @@
 		9AB2378F2BEFE08A00C71591 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB2378E2BEFE08A00C71591 /* Tracker.swift */; };
 		9AB237912BEFE09900C71591 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB237902BEFE09900C71591 /* TrackerCategory.swift */; };
 		9AB237932BEFE0A500C71591 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB237922BEFE0A500C71591 /* TrackerRecord.swift */; };
+		9AB64A8A2C22230C00473489 /* DataStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB64A892C22230C00473489 /* DataStoreProtocol.swift */; };
 		9ACB02182C0E13E300E9F6DC /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACB02172C0E13E300E9F6DC /* DataManager.swift */; };
 		9ACC80D12C18C48400127397 /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */; };
 		9ACC80D32C18C7A900127397 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACC80D22C18C7A900127397 /* UIColor.swift */; };
@@ -44,6 +46,7 @@
 		9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
+		9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerDataProvider.swift; sourceTree = SOURCE_ROOT; };
 		9A310C0F2BE4CE42006A3F4D /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A310C122BE4CE42006A3F4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9A310C142BE4CE42006A3F4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +65,7 @@
 		9AB2378E2BEFE08A00C71591 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		9AB237902BEFE09900C71591 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		9AB237922BEFE0A500C71591 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		9AB64A892C22230C00473489 /* DataStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreProtocol.swift; sourceTree = "<group>"; };
 		9ACB02172C0E13E300E9F6DC /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		9ACC80D22C18C7A900127397 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
@@ -125,6 +129,8 @@
 				9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */,
 				9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */,
 				9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */,
+				9AB64A892C22230C00473489 /* DataStoreProtocol.swift */,
+				9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -297,6 +303,7 @@
 				9AB237932BEFE0A500C71591 /* TrackerRecord.swift in Sources */,
 				9A4FFFA92C19FC2500296EA9 /* TrackerCoreData.xcdatamodeld in Sources */,
 				9AD4A6E62BF73DC300BBEF25 /* TrackerPropertiesCell.swift in Sources */,
+				9A2175F52C2706A3002CE0B1 /* TrackerDataProvider.swift in Sources */,
 				9A4EF4682C05456C006E2F2C /* CategoryTableViewCell.swift in Sources */,
 				9A310C172BE4CE42006A3F4D /* TabBarController.swift in Sources */,
 				9A310C132BE4CE42006A3F4D /* AppDelegate.swift in Sources */,
@@ -306,6 +313,7 @@
 				9ACB02182C0E13E300E9F6DC /* DataManager.swift in Sources */,
 				9A4EF4662C04D01F006E2F2C /* NewCategoryController.swift in Sources */,
 				9A310C152BE4CE42006A3F4D /* SceneDelegate.swift in Sources */,
+				9AB64A8A2C22230C00473489 /* DataStoreProtocol.swift in Sources */,
 				9A60698E2BF7C1AF000E65F9 /* EmojiViewCell.swift in Sources */,
 				9AE9D8662BFA0C6500BD0D3F /* ScheduleController.swift in Sources */,
 				9ACC80D32C18C7A900127397 /* UIColor.swift in Sources */,
