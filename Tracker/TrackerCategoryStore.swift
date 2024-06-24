@@ -1,14 +1,17 @@
 import UIKit
 import CoreData
 
-
+protocol TrackerCategoryStoreProtocol: AnyObject {
+    func addNewCategory(_ category: TrackerCategory) throws
+}
 
 private enum TrackerCategoryStoreError: Error {
     case decodingErrorInvalidCategoryTitle
     case decodingErrorInvalidCategoryTrackers
 }
 
-final class TrackerCategoryStore {
+final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
+    static let shared = TrackerCategoryStore()
     let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
@@ -22,8 +25,8 @@ final class TrackerCategoryStore {
     
     func addNewCategory(_ category: TrackerCategory) throws {
         let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
-        
         trackerCategoryCoreData.name = category.name
+        
         try context.save()
     }
     
@@ -48,7 +51,6 @@ final class TrackerCategoryStore {
             }
             return tracker
         }
-        
         
         return TrackerCategory(
             name: categoryTitle,

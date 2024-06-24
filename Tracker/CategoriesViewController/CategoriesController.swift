@@ -10,7 +10,7 @@ final class CategoriesController: UIViewController {
     private let defaultContainer = UIStackView()
     private let defaultLabel = UILabel()
     private let addCategoryButton = DarkButton(title: "Добавить категорию")
-    private var categories = [TrackerCategory(name: "Важное", trackers: []), TrackerCategory(name: "Домашние дела", trackers: [])]
+    private var categories = [TrackerCategory]()
     
     private let categoriesTableView = {
         let tableView = UITableView()
@@ -18,8 +18,18 @@ final class CategoriesController: UIViewController {
         return tableView
     }()
     
+    private lazy var dataProvider: TrackerCategoryDataProvider? = {
+        let trackerCategoryStore = TrackerCategoryStore.shared
+        let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
+        
+        return dataProvider
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let fetchedCategories = dataProvider?.fetchCategory() else { return }
+        categories = fetchedCategories
+        
         title = "Категория"
         view.backgroundColor = .tWhite
         

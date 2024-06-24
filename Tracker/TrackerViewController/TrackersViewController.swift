@@ -50,9 +50,15 @@ class TrackersViewController: UIViewController {
         return formatter
     }()
     
+    private lazy var dataProvider: TrackerCategoryDataProvider? = {
+        let trackerCategoryStore = TrackerCategoryStore.shared
+        let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
+        
+        return dataProvider
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         view.addGestureRecognizer(tap)
@@ -75,21 +81,9 @@ class TrackersViewController: UIViewController {
     }
     
     private func reloadData() {
-//        let newtrack = Tracker(id: UUID(), name: "Не психовать", color: UIColor.tPurple, emoji: "🧘🏻‍♀️", schedule: [DaysOfWeek(day: Days(rawValue: 1) ?? .friday, isOn: true)])
-//        
-//        try? TrackerStore().add(tracker: newtrack, with: "Невозможное")
-//        
-//        
-//        var a = [Tracker]()
-//        var new = [TrackerCategory]()
-//        
-//        guard var tr = dataProvider.fetchedResultsController.fetchedObjects else { return }
-//        tr.forEach {
-//            var tracker = Tracker(id: $0.id!, name: $0.name!, color: UIColor(hexString: $0.color!), emoji: $0.emoji!, schedule: TrackerStore().converToDay(days: $0.schedule))
-//            new.append(TrackerCategory(name: "Невозможное", trackers: [tracker]))
-//        }
+        guard let fetchedCategories = dataProvider?.fetchCategory() else { return }
         
-        categories = []
+        categories = fetchedCategories
         datePickerValueChanged()
     }
     
