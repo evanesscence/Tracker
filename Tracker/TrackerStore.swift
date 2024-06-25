@@ -7,6 +7,7 @@ protocol TrackerStoreProtocol: AnyObject {
 
 private enum TrackerStoreError: Error {
     case decodingErrorInvalidTracker
+    case failRequest
 }
 
 final class TrackerStore: TrackerStoreProtocol {
@@ -82,6 +83,14 @@ final class TrackerStore: TrackerStoreProtocol {
         }
         
         return daysarr
+    }
+    
+    func idsFetch(id: UUID) throws -> TrackerCoreData? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "%K == %@", "id", id as CVarArg)
+        
+        guard let items = try? context.fetch(request) else { throw TrackerStoreError.failRequest }
+        return items.first
     }
    
 }

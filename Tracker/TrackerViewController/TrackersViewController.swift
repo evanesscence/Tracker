@@ -50,9 +50,16 @@ class TrackersViewController: UIViewController {
         return formatter
     }()
     
-    private lazy var dataProvider: TrackerCategoryDataProvider? = {
+    private lazy var trackerCategoryDataProvider: TrackerCategoryDataProvider? = {
         let trackerCategoryStore = TrackerCategoryStore.shared
         let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
+        
+        return dataProvider
+    }()
+    
+    private lazy var trackerRecordDataProvider: TrackerRecordDataProvider? = {
+        let trackerRecordStore = TrackerRecordStore.shared
+        let dataProvider = TrackerRecordDataProvider(trackerRecordStore)
         
         return dataProvider
     }()
@@ -81,7 +88,7 @@ class TrackersViewController: UIViewController {
     }
     
     private func reloadData() {
-        guard let fetchedCategories = dataProvider?.fetchCategory() else { return }
+        guard let fetchedCategories = trackerCategoryDataProvider?.fetchCategory() else { return }
         
         categories = fetchedCategories
         datePickerValueChanged()
@@ -334,7 +341,13 @@ extension TrackersViewController: UICollectionViewDataSource {
 extension TrackersViewController: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.append(trackerRecord)
+        try? trackerRecordDataProvider?.addNewTrackerRecord(for: trackerRecord)
+        
+        let fetchedTrackerRecord = trackerRecordDataProvider?.fetchRecords()
+        fetchedTrackerRecord?.forEach {
+            completedTrackers.append($0)
+        }
+        
         trackerCollectionView.reloadItems(at: [indexPath])
     }
     
