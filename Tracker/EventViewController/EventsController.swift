@@ -289,6 +289,23 @@ class EventsController: UIViewController {
         view.addGestureRecognizer(tap)
     }
     
+    private func createTracker(selectedCategory: String, trackerName: String, schedule: [DaysOfWeek], selectedEmoji: String, selectedColor: String) {
+        let newTracker = Tracker(
+            id: UUID(),
+            name: trackerName,
+            color: UIColor(hexString: selectedColor),
+            emoji: selectedEmoji,
+            schedule: schedule)
+        
+        let newHabbit = TrackerCategory(
+            name: selectedCategory,
+            trackers: [newTracker]
+        )
+        
+        try? dataProvider?.add(tracker: newTracker, with: selectedCategory)
+        delegate?.createdNewTracker(tracker: newHabbit)
+    }
+    
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
@@ -310,40 +327,12 @@ class EventsController: UIViewController {
             
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             
-            let newTracker = Tracker(
-                id: UUID(),
-                name: trackerName,
-                color: UIColor(hexString: selectedColor),
-                emoji: selectedEmoji,
-                schedule: schedule)
+            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: schedule, selectedEmoji: selectedEmoji, selectedColor: selectedColor)
             
-            try? dataProvider?.add(tracker: newTracker, with: selectedCategory)
-            
-            let newHabbit = TrackerCategory(
-                name: selectedCategory,
-                trackers:
-                    [Tracker(
-                        id: UUID(),
-                        name: trackerName,
-                        color: UIColor(hexString: selectedColor),
-                        emoji: selectedEmoji,
-                        schedule: schedule)
-                    ])
-            
-            delegate?.createdNewTracker(tracker: newHabbit)
         } else {
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
-            let newHabbit = TrackerCategory(
-                name: selectedCategory,
-                trackers:
-                    [Tracker(
-                        id: UUID(),
-                        name: trackerName,
-                        color: UIColor(hexString: selectedColor),
-                        emoji: selectedEmoji,
-                        schedule: [])
-                    ])
-            delegate?.createdNewTracker(tracker: newHabbit)
+            
+            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: [], selectedEmoji: selectedEmoji, selectedColor: selectedColor)
         }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
@@ -412,13 +401,6 @@ extension EventsController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let numberOfItemsPerRow: CGFloat = 6
-//        let spacing: CGFloat = 10
-//        
-//        let totalSpacing = (numberOfItemsPerRow - 1) * spacing
-//        let width = (collectionView.bounds.width - totalSpacing) / numberOfItemsPerRow
-//        
-//        return CGSize(width: width, height: width)
         return CGSize(width: 60, height: 60)
     }
     

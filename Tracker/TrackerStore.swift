@@ -33,7 +33,7 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerCoreData.schedule = convertToInt(schedule: tracker.schedule)
         
         if let trackerCategory = TrackerCategoryStore().fetchCategoryName(category) {
-            trackerCoreData.category = NSSet(object: trackerCategory)
+            trackerCoreData.category = NSSet(object: trackerCategory) 
         }
         
         try context.save()

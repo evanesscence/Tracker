@@ -30,12 +30,6 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
         try context.save()
     }
     
-    func convertToTrackerCategory() throws -> [TrackerCategory] {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        let categoryFromCoreData = try context.fetch(fetchRequest)
-        return try categoryFromCoreData.map { try self.convertToTrackerCategory(from: $0) }
-    }
-    
     func convertToTrackerCategory(from trackerCategoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let categoryTitle = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryTitle

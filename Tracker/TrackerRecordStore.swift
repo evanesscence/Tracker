@@ -27,12 +27,27 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         try context.save()
     }
     
-    func convertToTrackerRecord() throws -> [TrackerRecord] {
-        let fetchRequest = TrackerRecordCoreData.fetchRequest()
-        let recordsCoreData = try context.fetch(fetchRequest)
-        return try recordsCoreData.map { try self.convertToTrackerRecord(from: $0) }
+    func deleteTrackerRecord(for record: TrackerRecord) throws {
+        let id = record.id
+        let date = record.date
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(
+            format: "(%K == %@) AND (%K == %@)",
+            #keyPath(TrackerRecordCoreData.trackerID), id as CVarArg,
+            #keyPath(TrackerRecordCoreData.date), date as CVarArg)
+        
+        if let result = try? context.fetch(request) {
+            for object in result {
+                context.delete(object)
+            }
+            do {
+                try context.save()
+            } catch {
+                throw error
+            }
+        }
     }
-   
     
     func convertToTrackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let date = trackerRecordCoreData.date else {
@@ -47,7 +62,6 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         return trackerRecord
         
     }
-    
 }
 
 extension TrackerRecordStore: DataStoreProtocol {

@@ -7,7 +7,7 @@ final class TrackerRecordDataProvider: NSObject {
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
-        fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "name", ascending: false) ]
+        fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "trackerID", ascending: false) ]
         
         let controller = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -26,15 +26,14 @@ final class TrackerRecordDataProvider: NSObject {
         self.dataStore = dataStore
     }
     
-    func fetchRecords() -> [TrackerRecord] {
-        do {
-            let records = try dataStore.convertToTrackerRecord()
-            return records
-        } catch {
-            assertionFailure("No tracker records")
-            return []
-        }
+    var records: [TrackerRecord] {
+        guard
+            let objects = self.fetchedResultsController.fetchedObjects,
+            let records = try? objects.map({ try dataStore.convertToTrackerRecord(from: $0) })
+        else { return [] }
+        return records
     }
+    
 }
 
 extension TrackerRecordDataProvider: NSFetchedResultsControllerDelegate {
@@ -54,5 +53,9 @@ extension TrackerRecordDataProvider: NSFetchedResultsControllerDelegate {
 extension TrackerRecordDataProvider: TrackerRecordStoreProtocol {
     func addNewTrackerRecord(for record: TrackerRecord) throws {
         try? dataStore.addNewTrackerRecord(for: record)
+    }
+    
+    func deleteTrackerRecord(for record: TrackerRecord) throws {
+        try? dataStore.deleteTrackerRecord(for: record)
     }
 }

@@ -25,7 +25,6 @@ final class TrackerDataProvider: NSObject {
         self.context = context
         self.dataStore = dataStore
     }
-    
    
 }
 

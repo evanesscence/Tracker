@@ -27,8 +27,9 @@ final class CategoriesController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let fetchedCategories = dataProvider?.fetchCategory() else { return }
-        categories = fetchedCategories
+        
+        guard let trackers = dataProvider?.trackers else { return }
+        categories = trackers
         
         title = "Категория"
         view.backgroundColor = .tWhite

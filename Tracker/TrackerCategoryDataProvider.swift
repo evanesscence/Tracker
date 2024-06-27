@@ -26,15 +26,30 @@ final class TrackerCategoryDataProvider: NSObject {
         self.dataStore = dataStore
     }
     
-    func fetchCategory() -> [TrackerCategory] {
-        do {
-            let categories = try dataStore.convertToTrackerCategory()
-            return categories
-        } catch {
-            assertionFailure("No tracker categories")
-            return []
-        }
+    var trackers: [TrackerCategory] {
+        guard
+            let objects = self.fetchedResultsController.fetchedObjects,
+            let trackersCategory = try? objects.map({ try dataStore.convertToTrackerCategory(from: $0) })
+        else { return [] }
+        return trackersCategory
     }
+    
+//    var numberOfSections: Int {
+//        fetchedResultsController.sections?.count ?? 0
+//    }
+//    
+//    func numberOfRowsInSection(_ section: Int) -> Int {
+//        guard !trackers.isEmpty else { return 0 }
+//        guard let count = fetchedResultsController.sections?[section].objects?.count else { return 0 }
+//        return count
+//    }
+//    
+//    func object(at section: IndexPath) throws -> TrackerCategory? {
+//        let trackerCoreData = fetchedResultsController.object(at: section)
+//        let trackerCategory = try? dataStore.convertToTrackerCategory(from: trackerCoreData)
+//        return trackerCategory
+//    }
+    
 }
 
 extension TrackerCategoryDataProvider: NSFetchedResultsControllerDelegate {
