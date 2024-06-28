@@ -322,6 +322,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
+        
+        completedTrackers = trackerRecordDataProvider?.records ?? []
         let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
         
         cell.delegate = self
@@ -348,14 +350,17 @@ extension TrackersViewController: TrackerCollectionViewCellProtocol {
         try? trackerRecordDataProvider?.addNewTrackerRecord(for: trackerRecord)
         
         completedTrackers = trackerRecordDataProvider?.records ?? []
-
         trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
-        completedTrackers.removeAll { trackerRecord in
-            isSameTracker(trackerRecord: trackerRecord, id: id)
+        completedTrackers.forEach { trackerRecord in
+            if isSameTracker(trackerRecord: trackerRecord, id: id) {
+                try? trackerRecordDataProvider?.deleteTrackerRecord(for: trackerRecord)
+            }
         }
+        
+        completedTrackers = trackerRecordDataProvider?.records ?? []
         trackerCollectionView.reloadItems(at: [indexPath])
     }
 }
