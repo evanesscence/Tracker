@@ -48,7 +48,7 @@
 		9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
-		9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerDataProvider.swift; sourceTree = SOURCE_ROOT; };
+		9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TrackerDataProvider.swift; path = Tracker/CoreData/DataProviders/TrackerDataProvider.swift; sourceTree = SOURCE_ROOT; };
 		9A310C0F2BE4CE42006A3F4D /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A310C122BE4CE42006A3F4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9A310C142BE4CE42006A3F4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -114,6 +114,7 @@
 		9A310C112BE4CE42006A3F4D /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				9A4557092C2F3A11009D2048 /* CoreData */,
 				9A654BEE2C1209BF001516D1 /* Resources */,
 				9A654BED2C12099E001516D1 /* TabBarViewController */,
 				9A654BEC2C120985001516D1 /* Mock */,
@@ -127,18 +128,39 @@
 				9A310C122BE4CE42006A3F4D /* AppDelegate.swift */,
 				9A310C142BE4CE42006A3F4D /* SceneDelegate.swift */,
 				9A310C202BE4CE43006A3F4D /* Info.plist */,
-				9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */,
-				9ACC80D22C18C7A900127397 /* UIColor.swift */,
+			);
+			path = Tracker;
+			sourceTree = "<group>";
+		};
+		9A4557092C2F3A11009D2048 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				9A45570B2C2F3AE8009D2048 /* StoreServices */,
+				9A45570A2C2F3ACB009D2048 /* DataProviders */,
 				9A4FFFA72C19FC2500296EA9 /* TrackerCoreData.xcdatamodeld */,
-				9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */,
-				9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */,
-				9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */,
-				9AB64A892C22230C00473489 /* DataStoreProtocol.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		9A45570A2C2F3ACB009D2048 /* DataProviders */ = {
+			isa = PBXGroup;
+			children = (
 				9A2175F42C2706A3002CE0B1 /* TrackerDataProvider.swift */,
 				9A4CAF8F2C29D73C0022541D /* TrackerCategoryDataProvider.swift */,
 				9A4309C52C2AF30B007277D1 /* TrackerRecordDataProvider.swift */,
 			);
-			path = Tracker;
+			path = DataProviders;
+			sourceTree = "<group>";
+		};
+		9A45570B2C2F3AE8009D2048 /* StoreServices */ = {
+			isa = PBXGroup;
+			children = (
+				9AB64A892C22230C00473489 /* DataStoreProtocol.swift */,
+				9A00CDD12C1C4A1E009728E1 /* TrackerStore.swift */,
+				9A1ADF2E2C1DD37E00DDF523 /* TrackerCategoryStore.swift */,
+				9A1ADF302C1DD3FE00DDF523 /* TrackerRecordStore.swift */,
+			);
+			path = StoreServices;
 			sourceTree = "<group>";
 		};
 		9A654BE62C120839001516D1 /* TrackerViewController */ = {
@@ -149,6 +171,7 @@
 				9A623ED02BFE4A7F00C48A8A /* TrackerCollectionViewCell.swift */,
 				9AD4A6E52BF73DC300BBEF25 /* TrackerPropertiesCell.swift */,
 				9AF449E62BF6157F0049FD2E /* NewTrackerController.swift */,
+				9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */,
 			);
 			path = TrackerViewController;
 			sourceTree = "<group>";
@@ -194,6 +217,7 @@
 			children = (
 				9A82F5262C03BE77003FAE59 /* DarkButton.swift */,
 				9AF449EA2BF655200049FD2E /* TextField.swift */,
+				9ACC80D22C18C7A900127397 /* UIColor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

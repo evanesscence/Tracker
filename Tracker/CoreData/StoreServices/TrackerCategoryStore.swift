@@ -55,11 +55,9 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
     func fetchCategoryName(_ name: String) -> TrackerCategoryCoreData? {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.returnsObjectsAsFaults = false
-        
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.name), name)
         
         let category = try! context.fetch(request)
-        
         if category.count > 0 { return category[0] } else { return nil }
     }
 }
