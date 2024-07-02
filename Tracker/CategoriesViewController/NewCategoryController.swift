@@ -8,9 +8,7 @@ final class NewCategoryController: UIViewController {
     
     private lazy var dataProvider: TrackerCategoryStoreProtocol? = {
         let trackerCategoryStore = TrackerCategoryStore.shared
-        let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
-        
-        return dataProvider
+        return trackerCategoryStore
     }()
     
     override func viewDidLoad() {

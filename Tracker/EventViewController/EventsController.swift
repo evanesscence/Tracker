@@ -67,11 +67,9 @@ class EventsController: UIViewController {
         return collection
     }()
     
-    private lazy var dataProvider: TrackerStoreProtocol? = {
+    private lazy var trackerStore: TrackerStoreProtocol? = {
         let trackerStore = TrackerStore.shared
-        let dataProvider = TrackerDataProvider(trackerStore)
-        
-        return dataProvider
+        return trackerStore
     }()
     
     
@@ -302,7 +300,7 @@ class EventsController: UIViewController {
             trackers: [newTracker]
         )
         
-        try? dataProvider?.add(tracker: newTracker, with: selectedCategory)
+        try? trackerStore?.add(tracker: newTracker, with: selectedCategory)
         delegate?.createdNewTracker(tracker: newHabbit)
     }
     

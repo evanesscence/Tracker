@@ -10,7 +10,7 @@ private enum TrackerStoreError: Error {
     case failRequest
 }
 
-final class TrackerStore: TrackerStoreProtocol {
+final class TrackerStore: NSObject, TrackerStoreProtocol {
     static let shared = TrackerStore()
     private let context: NSManagedObjectContext
     
@@ -18,10 +18,28 @@ final class TrackerStore: TrackerStoreProtocol {
         self.context = context
     }
     
-    convenience init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    convenience override init() {
+        guard let appDelegate = (UIApplication.shared.delegate as? AppDelegate) else {
+            fatalError("Не удалось получить AppDelegate")
+        }
+        let context = appDelegate.persistentContainer.viewContext
         self.init(context: context)
     }
+    
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "name", ascending: false) ]
+        
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        controller.delegate = self
+        try? controller.performFetch()
+        return controller
+    }()
     
     public func add(tracker: Tracker, with category: String) throws {
         let trackerCoreData = TrackerCoreData(context: context)
@@ -32,14 +50,23 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerCoreData.color = tracker.color.toHexString()
         trackerCoreData.schedule = convertToInt(schedule: tracker.schedule)
         
-        if let trackerCategory = TrackerCategoryStore().fetchCategoryName(category) {
-            trackerCoreData.category = NSSet(object: trackerCategory) 
+        if let trackerCategoryCoreData = try TrackerCategoryStore().fetchCategoryByName(category) {
+            trackerCoreData.category = trackerCategoryCoreData
+        } else {
+            throw TrackerStoreError.decodingErrorInvalidTracker
         }
         
         try context.save()
     }
     
-    func convertToTracker(_ trackerCoreData: TrackerCoreData) throws -> Tracker {
+    public func fetchTracker(by id: UUID) throws -> Tracker? {
+        if let trackerCoreData = try idsFetch(id: id) {
+            return try convertToTracker(trackerCoreData)
+        }
+        return nil
+    }
+    
+    private func convertToTracker(_ trackerCoreData: TrackerCoreData) throws -> Tracker {
         guard
             let id = trackerCoreData.id,
             let name = trackerCoreData.name,
@@ -62,7 +89,7 @@ final class TrackerStore: TrackerStoreProtocol {
         return tracker
     }
     
-    func convertToInt(schedule: [DaysOfWeek]) -> Int32 {
+    private func convertToInt(schedule: [DaysOfWeek]) -> Int32 {
         var days = ""
         schedule.forEach { day in
            days += String(day.day.rawValue)
@@ -71,7 +98,7 @@ final class TrackerStore: TrackerStoreProtocol {
         return Int32(days) ?? 0
     }
     
-    func converToDay(days: Int32) -> [DaysOfWeek] {
+    private func converToDay(days: Int32) -> [DaysOfWeek] {
         let a = String(days)
         let numbers = a.compactMap { $0.wholeNumberValue }
         var daysarr = [DaysOfWeek]()
@@ -85,7 +112,7 @@ final class TrackerStore: TrackerStoreProtocol {
         return daysarr
     }
     
-    func idsFetch(id: UUID) throws -> TrackerCoreData? {
+    private func idsFetch(id: UUID) throws -> TrackerCoreData? {
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "%K == %@", "id", id as CVarArg)
         
@@ -104,5 +131,23 @@ extension TrackerStore: DataStoreProtocol {
         context
     }
 }
+
+extension TrackerStore: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) { }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) { }
+    
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) { }
+}
+
+
+
+
 
 

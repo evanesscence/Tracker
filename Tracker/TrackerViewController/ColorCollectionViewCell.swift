@@ -26,7 +26,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     private func setupSelectedCell() {
         layer.borderColor = colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
         layer.borderWidth = 3
-        layer.cornerRadius = 16
+        layer.cornerRadius = 11
         layer.masksToBounds = true
     }
     

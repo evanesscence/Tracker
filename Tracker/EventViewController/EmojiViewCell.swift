@@ -23,7 +23,7 @@ class EmojiViewCell: UICollectionViewCell {
     
     private func setupSelectedCell() {
         backgroundColor = UIColor.tLightGray1
-        layer.cornerRadius = 16
+        layer.cornerRadius = 11
         layer.masksToBounds = true
     }
     

@@ -18,17 +18,15 @@ final class CategoriesController: UIViewController {
         return tableView
     }()
     
-    private lazy var dataProvider: TrackerCategoryDataProvider? = {
+    private lazy var trackerCategoryStore = {
         let trackerCategoryStore = TrackerCategoryStore.shared
-        let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
-        
-        return dataProvider
+        return trackerCategoryStore
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard let trackers = dataProvider?.trackers else { return }
+        let trackers = trackerCategoryStore.trackers
         categories = trackers
         
         title = "Категория"

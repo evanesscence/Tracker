@@ -5,7 +5,7 @@ protocol TrackerRecordStoreProtocol: AnyObject {
     func addNewTrackerRecord(for record: TrackerRecord) throws
 }
 
-final class TrackerRecordStore: TrackerRecordStoreProtocol {
+final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
     static let shared = TrackerRecordStore()
     private let context: NSManagedObjectContext
     
@@ -13,11 +13,36 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         self.context = context
     }
     
-    convenience init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    convenience override init() {
+        guard let appDelegate = (UIApplication.shared.delegate as? AppDelegate) else {
+            fatalError("Не удалось получить AppDelegate")
+        }
+        let context = appDelegate.persistentContainer.viewContext
         self.init(context: context)
     }
     
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [ NSSortDescriptor(key: "trackerID", ascending: false) ]
+        
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        controller.delegate = self
+        try? controller.performFetch()
+        return controller
+    }()
+    
+    var records: [TrackerRecord] {
+        guard
+            let objects = self.fetchedResultsController.fetchedObjects,
+            let records = try? objects.map({ try convertToTrackerRecord(from: $0) })
+        else { return [] }
+        return records
+    }
     
     func addNewTrackerRecord(for record: TrackerRecord) throws {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
@@ -49,7 +74,7 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         }
     }
     
-    func convertToTrackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
+    private func convertToTrackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let date = trackerRecordCoreData.date else {
             preconditionFailure("err")
         }
@@ -68,4 +93,18 @@ extension TrackerRecordStore: DataStoreProtocol {
     var managedObjectContext: NSManagedObjectContext? {
         context
     }
+}
+
+extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) { }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) { }
+    
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) { }
 }

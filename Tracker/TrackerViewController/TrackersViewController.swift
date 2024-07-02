@@ -50,18 +50,14 @@ class TrackersViewController: UIViewController {
         return formatter
     }()
     
-    private lazy var trackerCategoryDataProvider: TrackerCategoryDataProvider? = {
+    private lazy var trackerCategoryStore = {
         let trackerCategoryStore = TrackerCategoryStore.shared
-        let dataProvider = TrackerCategoryDataProvider(trackerCategoryStore)
-        
-        return dataProvider
+        return trackerCategoryStore
     }()
     
-    private lazy var trackerRecordDataProvider: TrackerRecordDataProvider? = {
+    private lazy var trackerRecordStore = {
         let trackerRecordStore = TrackerRecordStore.shared
-        let dataProvider = TrackerRecordDataProvider(trackerRecordStore)
-        
-        return dataProvider
+        return trackerRecordStore
     }()
     
     override func viewDidLoad() {
@@ -88,7 +84,7 @@ class TrackersViewController: UIViewController {
     }
     
     private func reloadData() {
-        guard let fetchedCategories = trackerCategoryDataProvider?.trackers else { return }
+        let fetchedCategories = trackerCategoryStore.trackers
         
         categories = fetchedCategories
         datePickerValueChanged()
@@ -323,7 +319,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
         
-        completedTrackers = trackerRecordDataProvider?.records ?? []
+        completedTrackers = trackerRecordStore.records
         let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
         
         cell.delegate = self
@@ -347,20 +343,20 @@ extension TrackersViewController: UICollectionViewDataSource {
 extension TrackersViewController: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        try? trackerRecordDataProvider?.addNewTrackerRecord(for: trackerRecord)
+        try? trackerRecordStore.addNewTrackerRecord(for: trackerRecord)
         
-        completedTrackers = trackerRecordDataProvider?.records ?? []
+        completedTrackers = trackerRecordStore.records
         trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
         completedTrackers.forEach { trackerRecord in
             if isSameTracker(trackerRecord: trackerRecord, id: id) {
-                try? trackerRecordDataProvider?.deleteTrackerRecord(for: trackerRecord)
+                try? trackerRecordStore.deleteTrackerRecord(for: trackerRecord)
             }
         }
         
-        completedTrackers = trackerRecordDataProvider?.records ?? []
+        completedTrackers = trackerRecordStore.records 
         trackerCollectionView.reloadItems(at: [indexPath])
     }
 }
