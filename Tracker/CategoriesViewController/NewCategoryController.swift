@@ -6,6 +6,11 @@ final class NewCategoryController: UIViewController {
     private let trackerLabelTextField = TextField()
     private let confirmButton = DarkButton(title: "Готово")
     
+    private lazy var dataProvider: TrackerCategoryStoreProtocol? = {
+        let trackerCategoryStore = TrackerCategoryStore.shared
+        return trackerCategoryStore
+    }()
+    
     override func viewDidLoad() {
         navigationItem.title = "Новая категория"
         view.backgroundColor = .white
@@ -79,8 +84,10 @@ final class NewCategoryController: UIViewController {
     @objc
     private func confirmButtonTapped() {
         if let newCategory = newCategory {
+            try? dataProvider?.addNewCategory(TrackerCategory(name: newCategory, trackers: []))
             delegate?.newCategoryWasAdded(with: newCategory)
         }
+        
         dismiss(animated: true)
     }
     

@@ -131,11 +131,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         
         let image = isCompletedToday ? doneImage : plusImage
-        let opacity = isCompletedToday || isTomorrow ? 0.3 : 1
+        let opacity = isCompletedToday || !isTomorrow ? 0.3 : 1
         
         completeButton.layer.opacity = Float(opacity)
         completeButton.setImage(image, for: .normal)
-        completeButton.isEnabled = !isTomorrow
+        completeButton.isEnabled = isTomorrow
     }
     
     func setupCompleteButton() {
