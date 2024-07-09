@@ -246,7 +246,7 @@ class EventsController: UIViewController {
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
         if property == Properties.category.rawValue {
-            let categoriesController = CategoriesController()
+            let categoriesController = CategoriesController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
             categoriesController.delegate = self
             vc = categoriesController
         }

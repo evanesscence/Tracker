@@ -1,7 +1,7 @@
 import UIKit
 
 protocol CategoriesControllerProtocol: AnyObject {
-    func newCategoryWasAdded(with name: String)
+    func newCategoryWasAdded()
 }
 
 final class CategoriesController: UIViewController {
@@ -10,7 +10,7 @@ final class CategoriesController: UIViewController {
     private let defaultContainer = UIStackView()
     private let defaultLabel = UILabel()
     private let addCategoryButton = DarkButton(title: "Добавить категорию")
-    private var categories = [TrackerCategory]()
+    private let viewModel: CategoriesViewModel
     
     private let categoriesTableView = {
         let tableView = UITableView()
@@ -23,22 +23,43 @@ final class CategoriesController: UIViewController {
         return trackerCategoryStore
     }()
     
+    init(viewModel: CategoriesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let trackers = trackerCategoryStore.trackers
-        categories = trackers
-        
         title = "Категория"
         view.backgroundColor = .tWhite
-        
-        if categories.isEmpty {
-            setupDefaultInfo()
+
+        setupAddCategoryButton()
+        bindViewModel()
+        viewModel.loadCategories()
+    }
+    
+    private func bindViewModel() {
+        viewModel.categoriesBinding = { [weak self] categories in
+            guard let self = self else { return }
+            viewSetup(with: categories)
+            categoriesTableView.reloadData()
         }
         
-        setupAddCategoryButton()
-        setupCategoryTableView()
-        
+        categoriesTableView.reloadData()
+    }
+    
+    private func viewSetup(with categories: [TrackerCategory]) {
+        if categories.isEmpty {
+            self.setupDefaultInfo()
+        } else {
+            self.setupCategoryTableView()
+        }
+        self.categoriesTableView.reloadData()
     }
     
     private func setupDefaultInfo() {
@@ -85,6 +106,10 @@ final class CategoriesController: UIViewController {
     }
     
     private func setupCategoryTableView() {
+        categoriesTableView.tableHeaderView = UIView()
+        categoriesTableView.layer.cornerRadius = 16
+        categoriesTableView.clipsToBounds = true
+        categoriesTableView.alwaysBounceVertical = false
         categoriesTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         view.addSubview(categoriesTableView)
@@ -99,35 +124,11 @@ final class CategoriesController: UIViewController {
         
         categoriesTableView.dataSource = self
         categoriesTableView.delegate = self
-        
     }
-    
-    private func configureCellCorners(_ cell: UITableViewCell, indexPath: IndexPath) {
-           let cornerRadius: CGFloat = 16
-           let maskLayer = CAShapeLayer()
-           let bounds = cell.bounds
-           
-           if indexPath.row == 0 && indexPath.row == categories.count - 1 {
-               // Единственная ячейка
-               maskLayer.path = UIBezierPath(roundedRect: bounds, byRoundingCorners: [.allCorners], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
-           } else if indexPath.row == 0 {
-               // Первая ячейка
-               maskLayer.path = UIBezierPath(roundedRect: bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
-           } else if indexPath.row == categories.count - 1 {
-               // Последняя ячейка
-               maskLayer.path = UIBezierPath(roundedRect: bounds, byRoundingCorners: [.bottomLeft, .bottomRight], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
-           } else {
-               // Средние ячейки
-               maskLayer.path = UIBezierPath(roundedRect: bounds, byRoundingCorners: [], cornerRadii: CGSize(width: 0, height: 0)).cgPath
-           }
-           
-           cell.layer.mask = maskLayer
-       }
     
     @objc
     private func addCategoryButtonTapped() {
-        let vc = NewCategoryController()
-        vc.delegate = self
+        let vc = NewCategoryController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
         let navigationController = UINavigationController(rootViewController: vc)
         present(navigationController, animated: true)
     }
@@ -147,40 +148,32 @@ extension CategoriesController: UITableViewDelegate {
         cell.shouldShowDoneIcon()
         categoriesTableView.deselectRow(at: indexPath, animated: true)
         
-        delegate?.didConfirm(with: categories[indexPath.row])
+        delegate?.didConfirm(with: viewModel.categories[indexPath.row])
         self.dismiss(animated: true)
     }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-            if indexPath.row == categories.count - 1 {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            } else {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            }
-        }
 }
 
 extension CategoriesController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.reuseIdentifier, for: indexPath) 
-        cell.textLabel?.text = categories[indexPath.row].name
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.reuseIdentifier, for: indexPath) as? CategoryTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.setCategoryName(viewModel.categories[indexPath.row].name)
         cell.backgroundColor = .tLightGray30
-        configureCellCorners(cell, indexPath: indexPath)
+        
+        if indexPath.row == viewModel.categories.count-1 {
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        }
+        
         return cell
     }
     
 }
 
-extension CategoriesController: CategoriesControllerProtocol {
-    func newCategoryWasAdded(with name: String) {
-        let newCategory = TrackerCategory(name: name, trackers: [])
-        categories.append(newCategory)
-        setupCategoryTableView()
-        categoriesTableView.reloadData()
-    }
-}
 

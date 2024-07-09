@@ -1,15 +1,24 @@
 import UIKit
 
 final class NewCategoryController: UIViewController {
-    weak var delegate: CategoriesControllerProtocol?
     private var newCategory: String?
     private let trackerLabelTextField = TextField()
     private let confirmButton = DarkButton(title: "Готово")
+    private let viewModel: CategoriesViewModel
     
     private lazy var dataProvider: TrackerCategoryStoreProtocol? = {
         let trackerCategoryStore = TrackerCategoryStore.shared
         return trackerCategoryStore
     }()
+    
+    init(viewModel: CategoriesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         navigationItem.title = "Новая категория"
@@ -84,8 +93,7 @@ final class NewCategoryController: UIViewController {
     @objc
     private func confirmButtonTapped() {
         if let newCategory = newCategory {
-            try? dataProvider?.addNewCategory(TrackerCategory(name: newCategory, trackers: []))
-            delegate?.newCategoryWasAdded(with: newCategory)
+            viewModel.addNewCategory(category: TrackerCategory(name: newCategory, trackers: []))
         }
         
         dismiss(animated: true)

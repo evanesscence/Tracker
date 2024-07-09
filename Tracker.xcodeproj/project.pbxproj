@@ -39,6 +39,7 @@
 		9AF449E72BF6157F0049FD2E /* NewTrackerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF449E62BF6157F0049FD2E /* NewTrackerController.swift */; };
 		9AF449E92BF648F70049FD2E /* EventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF449E82BF648F70049FD2E /* EventsController.swift */; };
 		9AF449EB2BF655200049FD2E /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF449EA2BF655200049FD2E /* TextField.swift */; };
+		9AF9EDA52C39DC0600BD0479 /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF9EDA42C39DC0600BD0479 /* CategoriesViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		9AF449E62BF6157F0049FD2E /* NewTrackerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerController.swift; sourceTree = "<group>"; };
 		9AF449E82BF648F70049FD2E /* EventsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsController.swift; sourceTree = "<group>"; };
 		9AF449EA2BF655200049FD2E /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
+		9AF9EDA42C39DC0600BD0479 /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,7 +115,7 @@
 				9A654BED2C12099E001516D1 /* TabBarViewController */,
 				9A654BEC2C120985001516D1 /* Mock */,
 				9A654BEB2C120971001516D1 /* Extensions */,
-				9A654BEA2C120952001516D1 /* CategoriesViewController */,
+				9A654BEA2C120952001516D1 /* Categories */,
 				9A654BE92C120925001516D1 /* ScheduleViewController */,
 				9A654BE82C1208E9001516D1 /* EventViewController */,
 				9A654BE72C1208CB001516D1 /* StatisticsViewController */,
@@ -185,14 +187,13 @@
 			path = ScheduleViewController;
 			sourceTree = "<group>";
 		};
-		9A654BEA2C120952001516D1 /* CategoriesViewController */ = {
+		9A654BEA2C120952001516D1 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				9A4EF4672C05456C006E2F2C /* CategoryTableViewCell.swift */,
-				9A4EF4652C04D01F006E2F2C /* NewCategoryController.swift */,
-				9AE9D8672BFA0C7900BD0D3F /* CategoriesController.swift */,
+				9AF9EDA32C39DAC200BD0479 /* CategoriesViewModel */,
+				9AF9EDA22C39DAA800BD0479 /* CategoriesView */,
 			);
-			path = CategoriesViewController;
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		9A654BEB2C120971001516D1 /* Extensions */ = {
@@ -239,6 +240,24 @@
 				9AB237922BEFE0A500C71591 /* TrackerRecord.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		9AF9EDA22C39DAA800BD0479 /* CategoriesView */ = {
+			isa = PBXGroup;
+			children = (
+				9A4EF4652C04D01F006E2F2C /* NewCategoryController.swift */,
+				9A4EF4672C05456C006E2F2C /* CategoryTableViewCell.swift */,
+				9AE9D8672BFA0C7900BD0D3F /* CategoriesController.swift */,
+			);
+			path = CategoriesView;
+			sourceTree = "<group>";
+		};
+		9AF9EDA32C39DAC200BD0479 /* CategoriesViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				9AF9EDA42C39DC0600BD0479 /* CategoriesViewModel.swift */,
+			);
+			path = CategoriesViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -315,6 +334,7 @@
 				9AF449EB2BF655200049FD2E /* TextField.swift in Sources */,
 				9AB237932BEFE0A500C71591 /* TrackerRecord.swift in Sources */,
 				9A4FFFA92C19FC2500296EA9 /* TrackerCoreData.xcdatamodeld in Sources */,
+				9AF9EDA52C39DC0600BD0479 /* CategoriesViewModel.swift in Sources */,
 				9AD4A6E62BF73DC300BBEF25 /* TrackerPropertiesCell.swift in Sources */,
 				9A4EF4682C05456C006E2F2C /* CategoryTableViewCell.swift in Sources */,
 				9A310C172BE4CE42006A3F4D /* TabBarController.swift in Sources */,
