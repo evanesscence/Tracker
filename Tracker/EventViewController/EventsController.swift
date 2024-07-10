@@ -2,7 +2,7 @@ import UIKit
 
 protocol EventsControllerProtocol: AnyObject {
     func didConfirm(with days: [DaysOfWeek])
-    func didConfirm(with category: TrackerCategory)
+    func didConfirm(with category: String)
 }
 
 enum TypeOfEvent {
@@ -17,8 +17,8 @@ enum Properties: String, CaseIterable {
 
 class EventsController: UIViewController {
     var collectionElements = [CollectionElements]()
-    
     var type: TypeOfEvent
+    
     init(type: TypeOfEvent) {
         self.type = type
         super.init(nibName: nil, bundle: nil)
@@ -246,7 +246,7 @@ class EventsController: UIViewController {
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
         if property == Properties.category.rawValue {
-            let categoriesController = CategoriesController()
+            let categoriesController = CategoriesController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
             categoriesController.delegate = self
             vc = categoriesController
         }
@@ -490,8 +490,8 @@ extension EventsController: UICollectionViewDataSource {
 }
 
 extension EventsController: EventsControllerProtocol {
-    func didConfirm(with category: TrackerCategory) {
-        selectedCategory = category.name
+    func didConfirm(with category: String) {
+        selectedCategory = category
         
         didSelectedCategory = true
         createButtonIsEnabled()

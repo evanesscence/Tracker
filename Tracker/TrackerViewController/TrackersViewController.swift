@@ -258,6 +258,7 @@ class TrackersViewController: UIViewController {
     @objc func createNewTracker() {
         let newTracker = NewTrackerController()
         newTracker.delegate = self
+        
         present(UINavigationController(rootViewController: newTracker), animated: true, completion: nil)
     }
     
