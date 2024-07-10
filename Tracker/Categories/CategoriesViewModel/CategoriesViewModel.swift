@@ -6,30 +6,55 @@ final class CategoriesViewModel {
     weak var delegate: TrackerCategoryStoreDelegate?
     private var categoryStore: TrackerCategoryStore
     
-    var categories: [TrackerCategory] = [] {
+    private(set) var categories: [CategoryViewModel] = [] {
         didSet {
             categoriesBinding?(categories)
         }
     }
     
-    var categoriesBinding: Binding<[TrackerCategory]>?
+    private(set) var selectedCategory: CategoryViewModel? = nil {
+        didSet {
+            selectedCategoryBinding?(selectedCategory)
+        }
+    }
+    
+    var categoriesBinding: Binding<[CategoryViewModel]>?
+    var selectedCategoryBinding: Binding<CategoryViewModel?>?
 
-    init(categoryStore: TrackerCategoryStore) {
+    init(categoryStore: TrackerCategoryStore, selectedCategory: CategoryViewModel? = nil) {
         self.categoryStore = categoryStore
+        self.selectedCategory = selectedCategory
         categoryStore.delegate = self
+        
         loadCategories()
+    }
+    
+    convenience init(selectedCategory: CategoryViewModel? = nil) {
+        self.init(categoryStore: TrackerCategoryStore(), selectedCategory: selectedCategory)
     }
     
     func loadCategories() {
         categories = getCategoriesFromStore()
-    }
 
-    func getCategoriesFromStore() -> [TrackerCategory] {
-        return categoryStore.trackers
+    }
+    
+    func getCategoriesFromStore() -> [CategoryViewModel] {
+        categoryStore.trackersCD.map {
+            guard let name = $0.name else { fatalError() }
+            return CategoryViewModel(
+                id: $0.objectID.uriRepresentation().absoluteString,
+                name: name
+            )
+        }
     }
     
     func addNewCategory(category: TrackerCategory) {
         try? categoryStore.addNewCategory(category)
+    }
+    
+    
+    func selectCategory(category: CategoryViewModel) {
+        selectedCategory = category
     }
 }
 

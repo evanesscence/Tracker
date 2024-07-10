@@ -53,7 +53,7 @@ final class CategoriesController: UIViewController {
         categoriesTableView.reloadData()
     }
     
-    private func viewSetup(with categories: [TrackerCategory]) {
+    private func viewSetup(with categories: [CategoryViewModel]) {
         if categories.isEmpty {
             self.setupDefaultInfo()
         } else {
@@ -146,9 +146,15 @@ extension CategoriesController: UITableViewDelegate {
         }
         
         cell.shouldShowDoneIcon()
-        categoriesTableView.deselectRow(at: indexPath, animated: true)
         
-        delegate?.didConfirm(with: viewModel.categories[indexPath.row])
+        categoriesTableView.deselectRow(at: indexPath, animated: true)
+        viewModel.selectCategory(category: viewModel.categories[indexPath.row])
+        
+        viewModel.selectedCategory?.nameBinding = { [weak self] name in
+            guard let self = self else { return }
+            self.delegate?.didConfirm(with: name)
+        }
+        
         self.dismiss(animated: true)
     }
 }
@@ -163,7 +169,12 @@ extension CategoriesController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.setCategoryName(viewModel.categories[indexPath.row].name)
+        let category = viewModel.categories[indexPath.row]
+        category.nameBinding = { name in
+            cell.setCategoryName(name)
+        }
+        
+        cell.viewModel = viewModel.categories[indexPath.item]
         cell.backgroundColor = .tLightGray30
         
         if indexPath.row == viewModel.categories.count-1 {

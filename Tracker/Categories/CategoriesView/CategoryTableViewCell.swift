@@ -1,6 +1,14 @@
 import UIKit
 
 final class CategoryTableViewCell: UITableViewCell {
+    var viewModel: CategoryViewModel? {
+        didSet {
+            viewModel?.nameBinding = { [weak self] name in
+                self?.categoryName.text = name
+            }
+        }
+    }
+    
     static let reuseIdentifier = "NewCategoryTableViewCell"
     private let categoryName = UILabel()
     private let doneIcon = UIImageView()
@@ -48,5 +56,10 @@ final class CategoryTableViewCell: UITableViewCell {
             doneIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             doneIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        viewModel?.nameBinding = nil
     }
 }

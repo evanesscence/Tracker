@@ -49,6 +49,10 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         return controller
     }()
     
+    var trackersCD: [TrackerCategoryCoreData] {
+        return self.fetchedResultsController.fetchedObjects ?? []
+    }
+    
     var trackers: [TrackerCategory] {
         guard let objects = fetchedResultsController.fetchedObjects else {
             return []
