@@ -16,11 +16,8 @@ final class PageViewController: UIViewController {
     
     private let preview: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "FirstPage")
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = image
-        
+
         return imageView
     }()
     
@@ -62,6 +59,8 @@ final class PageViewController: UIViewController {
     }
     
     private func setupPreview() {
+        preview.image = UIImage(named: pageImageName)
+        
         NSLayoutConstraint.activate([
             preview.topAnchor.constraint(equalTo: view.topAnchor),
             preview.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -71,6 +70,8 @@ final class PageViewController: UIViewController {
     }
     
     private func setupStartButton() {
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+        
         NSLayoutConstraint.activate([
             startButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             startButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
@@ -86,5 +87,20 @@ final class PageViewController: UIViewController {
             previewDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             previewDescription.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
         ])
+    }
+    
+    @objc private func startButtonTapped() {
+        UserDefaults.standard.set(true, forKey: "isReEntry")
+        
+        guard let window = UIApplication.shared.windows.first else { return }
+        
+        let mainScreen = TabBarController()
+        window.rootViewController = mainScreen
+        UIView.transition(
+            with: window,
+            duration: 0.8,
+            options: [.transitionCrossDissolve],
+            animations: nil
+        )
     }
 }
