@@ -11,8 +11,8 @@ enum TypeOfEvent {
 }
 
 enum Properties: String, CaseIterable {
-    case category = "Категория"
-    case sсhedule = "Расписание"
+    case category
+    case sсhedule
 }
 
 class EventsController: UIViewController {
@@ -113,12 +113,12 @@ class EventsController: UIViewController {
     private func setupEventData() {
         switch type {
         case .habbit:
-            title = "Новая привычка"
-            properties = ["Категория", "Расписание"]
+            title = NSLocalizedString("newHabbit", comment: "")
+            properties = [NSLocalizedString("category", comment: ""), NSLocalizedString("schedule", comment: "")]
             break
         case .irregularEvent:
-            title = "Новое нерегулярное событие"
-            properties = ["Категория"]
+            title = NSLocalizedString("newIrregularEvent", comment: "")
+            properties = [NSLocalizedString("category", comment: "")]
             break
         }
     }
@@ -143,7 +143,7 @@ class EventsController: UIViewController {
         
         trackerLabelTextField.backgroundColor = .tLightGray30
         trackerLabelTextField.layer.cornerRadius = 16
-        trackerLabelTextField.placeholder = "Введите название трекера"
+        trackerLabelTextField.placeholder = NSLocalizedString("enterTrackerTitle", comment: "")
         trackerLabelTextField.clearButtonMode = .whileEditing
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -152,10 +152,9 @@ class EventsController: UIViewController {
         
         hintOfTextField.isHidden = true
         hintOfTextField.textAlignment = .center
-        hintOfTextField.text = "Ограничение 38 символов"
+        hintOfTextField.text = NSLocalizedString("characterLimit", comment: "")
         hintOfTextField.textColor = .tRed
         hintOfTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        
         
         NSLayoutConstraint.activate([
             trackerTextFieldContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
@@ -184,7 +183,7 @@ class EventsController: UIViewController {
         eventPropertiesTable.delegate = self
         eventPropertiesTable.dataSource = self
     }
- //
+    
     private func collectionViewConfig() {
         collectionView.allowsMultipleSelection = true
         contentView.addSubview(collectionView)
@@ -208,7 +207,7 @@ class EventsController: UIViewController {
     
         buttonsContainer.distribution = .fillEqually
         
-        cancelButton.setTitle("Отмена", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("cancelButton", comment: ""), for: .normal)
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         cancelButton.backgroundColor = .tWhite
         cancelButton.setTitleColor(.tRed, for: .normal)
@@ -217,7 +216,7 @@ class EventsController: UIViewController {
         cancelButton.layer.cornerRadius = 16
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
        
-        createButton.setTitle("Создать", for: .normal)
+        createButton.setTitle(NSLocalizedString("createButton", comment: ""), for: .normal)
         createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createButton.isEnabled = false
         createButton.backgroundColor = .tTextFieldLabel
@@ -239,19 +238,17 @@ class EventsController: UIViewController {
             buttonsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             buttonsContainer.heightAnchor.constraint(equalToConstant: 60)
         ])
-        
-       
     }
     
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
-        if property == Properties.category.rawValue {
+        if property == NSLocalizedString("category", comment: "") {
             let categoriesController = CategoriesController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
             categoriesController.delegate = self
             vc = categoriesController
         }
         
-        if property == Properties.sсhedule.rawValue {
+        if property == NSLocalizedString("schedule", comment: "") {
             let scheduleController = ScheduleController()
             scheduleController.delegate = self
             vc = scheduleController
@@ -500,7 +497,7 @@ extension EventsController: EventsControllerProtocol {
     
     func didConfirm(with days: [DaysOfWeek]) {
         if days.count == 7 {
-            selectedDays = "Каждый день"
+            selectedDays = NSLocalizedString("everyDay", comment: "")
             
         } else {
             selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")

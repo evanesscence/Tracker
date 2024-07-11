@@ -12,7 +12,7 @@ class NewTrackerController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        navigationItem.title = "Создание трекера"
+        navigationItem.title = NSLocalizedString("createTracker", comment: "")
         
         buttonsConfig([habbitButton, irregularEventButton])
         habbitButtonConfig()
@@ -38,14 +38,14 @@ class NewTrackerController: UIViewController {
     }
     
     private func habbitButtonConfig() {
-        habbitButton.setTitle("Привычка", for: .normal)
+        habbitButton.setTitle(NSLocalizedString("habbit", comment: ""), for: .normal)
         habbitButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         habbitButton.addTarget(self, action: #selector(addHabbit), for: .touchUpInside)
     }
     
     private func irregularEventConfig() {
-        irregularEventButton.setTitle("Нерегулярное событие", for: .normal)
+        irregularEventButton.setTitle(NSLocalizedString("irregularEvent", comment: ""), for: .normal)
         irregularEventButton.topAnchor.constraint(equalTo: habbitButton.bottomAnchor, constant: 16).isActive = true
         
         irregularEventButton.addTarget(self, action: #selector(addIrregularEvent), for: .touchUpInside)

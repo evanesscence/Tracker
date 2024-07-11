@@ -1,0 +1,68 @@
+// MARK: - General
+trackers = "Трекеры";
+statistic = "Статистика";
+
+// MARK: - Basic operations
+search = "Поиск";
+cancel = "Отменить";
+
+// MARK: - Schedule
+todayOnly = "Только сегодня";
+dayEndsWithOne = "день";
+dayEndsWith234 = "дня";
+days = "дней";
+everyDay = "Каждый день";
+
+// MARK: - Tracker creation
+createTracker = "Создание трекера";
+habbit = "Привычка";
+irregularEvent = "Нерегулярное событие";
+
+// MARK: - Events
+category = "Категория";
+schedule = "Расписание";
+newHabbit = "Новая привычка";
+newIrregularEvent = "Новое нерегулярное событие";
+
+// MARK: - Category creation
+newCategory = "Новая категория";
+
+// MARK: - Placeholders
+enterTrackerTitle = "Введите название трекера";
+enterCategoryTitle = "Введите название категории";
+
+// MARK: - Tips
+characterLimit = "Ограничение 38 символов";
+
+// MARK: - Buttons state
+cancelButton = "Отмена";
+createButton = "Создать";
+addCategoryButton = "Добавить категорию";
+doneButton = "Готово";
+
+// MARK: - Sections
+сolor = "Цвет";
+
+emptyStateTitle = "Что будем отслеживать?";
+delete = "Удалить";
+deleteConfirmation = "Уверены что хотите удалить трекер?";
+
+eventsGrouped = "Привычки и события можно \n объединить по смыслу";
+
+// MARK: - WeekDays
+sunday = "Воскресенье";
+monday = "Понедельник";
+tuesday = "Вторник";
+wednesday = "Среда";
+thursday = "Четверг";
+friday = "Пятница";
+saturday = "Суббота";
+
+sun = "Вс";
+mon = "Пн";
+tue = "Вт";
+wed = "Ср";
+thu = "Чт";
+fri = "Пт";
+sat = "Сб";
+

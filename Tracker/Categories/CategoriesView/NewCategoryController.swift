@@ -21,7 +21,7 @@ final class NewCategoryController: UIViewController {
     }
     
     override func viewDidLoad() {
-        navigationItem.title = "Новая категория"
+        navigationItem.title = NSLocalizedString("newCategory", comment: "")
         view.backgroundColor = .white
         
         setupConfirmButton()
@@ -49,7 +49,7 @@ final class NewCategoryController: UIViewController {
         trackerLabelTextField.translatesAutoresizingMaskIntoConstraints = false
         trackerLabelTextField.backgroundColor = .tLightGray30
         trackerLabelTextField.layer.cornerRadius = 16
-        trackerLabelTextField.placeholder = "Введите название категории"
+        trackerLabelTextField.placeholder = NSLocalizedString("enterCategoryTitle", comment: "")
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         trackerLabelTextField.clearButtonMode = .whileEditing

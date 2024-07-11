@@ -9,7 +9,7 @@ final class CategoriesController: UIViewController {
     private let defaultImage = UIImageView()
     private let defaultContainer = UIStackView()
     private let defaultLabel = UILabel()
-    private let addCategoryButton = DarkButton(title: "Добавить категорию")
+    private let addCategoryButton = DarkButton(title: NSLocalizedString("addCategoryButton", comment: ""))
     private let viewModel: CategoriesViewModel
     
     private let categoriesTableView = {
@@ -35,7 +35,7 @@ final class CategoriesController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Категория"
+        title = NSLocalizedString("category", comment: "")
         view.backgroundColor = .tWhite
 
         setupAddCategoryButton()
@@ -71,7 +71,7 @@ final class CategoriesController: UIViewController {
         defaultImage.image = UIImage(named: "TrackersDefault")
         defaultImage.contentMode = .scaleAspectFit
         
-        defaultLabel.text = "Привычки и события можно \n объединить по смыслу"
+        defaultLabel.text = NSLocalizedString("eventsGrouped", comment: "")
         defaultLabel.textAlignment = .center
         defaultLabel.numberOfLines = 2
         defaultLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)

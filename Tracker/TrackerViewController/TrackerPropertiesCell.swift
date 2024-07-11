@@ -76,7 +76,6 @@ class TrackerPropertiesCell: UITableViewCell {
         } else {
             chosenPropertiesLabel.text = cell.selectedCategory
         }
-       
       
         propertiesLabel.text = cell.title
         chosenPropertiesLabel.textColor = .tTextFieldLabel

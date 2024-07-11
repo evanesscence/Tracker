@@ -34,6 +34,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
         layer.borderWidth = 0
         layer.borderColor = .none
     }
+    
     private func setupColorView() {
         colorView.frame.size = CGSize(width: 40, height: 40)
         colorView.layer.cornerRadius = 8

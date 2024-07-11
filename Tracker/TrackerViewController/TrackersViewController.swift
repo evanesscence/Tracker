@@ -7,10 +7,10 @@ protocol TrackersViewControllerDelegate: AnyObject {
 class TrackersViewController: UIViewController {
     private let dataManager = DataManager.shared
 
-    var completedTrackers: [TrackerRecord] = []
-    var categories: [TrackerCategory] = []
-    var visibleCategories: [TrackerCategory] = []
-    var isTomorrow = false
+    private var completedTrackers: [TrackerRecord] = []
+    private var categories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategory] = []
+    private var isTomorrow = false
     
     private lazy var searchBar: UISearchTextField = {
         let textField = UISearchTextField()
@@ -62,7 +62,20 @@ class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupView()
+        reloadData()
+    }
+    
+    private func setupView() {
+        setupGeneral()
+        setupDefaultInfo()
+        setupSearchBar()
+        setupAddButton()
+        setupDatePickerLabel()
+        setupTrackerCollectionView()
+    }
+    
+    private func setupGeneral() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         view.addGestureRecognizer(tap)
         
@@ -70,17 +83,10 @@ class TrackersViewController: UIViewController {
         navigationItem.leftBarButtonItem?.tintColor = .tBlack
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        title = "Трекеры"
+        title = NSLocalizedString("trackers", comment: "")
         navigationController?.navigationBar.largeTitleTextAttributes = [.font: UIFont.systemFont(ofSize: 34, weight: .bold), .foregroundColor: UIColor.tBlack]
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        
-        reloadData()
-        setupDefaultInfo()
-        setupSearchBar()
-        setupAddButton()
-        setupDatePickerLabel()
-        setupTrackerCollectionView()
     }
     
     private func reloadData() {
@@ -138,13 +144,13 @@ class TrackersViewController: UIViewController {
         searchBarContainer.alignment = .fill
         searchBarContainer.distribution = .fill
         
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = NSLocalizedString("search", comment: "")
         searchBar.backgroundColor = .tWhite
         searchBar.clearButtonMode = .never
         searchBar.addTarget(self, action: #selector(searchBarTapped), for: .editingDidBegin)
         
         searchBarCancelButton.isHidden = true
-        searchBarCancelButton.setTitle("Отменить", for: .normal)
+        searchBarCancelButton.setTitle(NSLocalizedString("cancel", comment: ""), for: .normal)
         searchBarCancelButton.setTitleColor(.tBlue, for: .normal)
         searchBarCancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         searchBarCancelButton.addTarget(self, action: #selector(searchBarCancelButtonTapped), for: .touchUpInside)
@@ -174,7 +180,7 @@ class TrackersViewController: UIViewController {
         
         let defaultText = UILabel()
         defaultText.translatesAutoresizingMaskIntoConstraints = false
-        defaultText.text = "Что будем отслеживать?"
+        defaultText.text = NSLocalizedString("emptyStateTitle", comment: "")
         defaultText.font = .systemFont(ofSize: 12, weight: .medium)
         defaultText.textColor = .tBlack
     
@@ -262,7 +268,6 @@ class TrackersViewController: UIViewController {
         present(UINavigationController(rootViewController: newTracker), animated: true, completion: nil)
     }
     
-    
     @objc func textFieldEditingChanged() {
         reloadVisibleCategroies()
     }
@@ -273,7 +278,7 @@ class TrackersViewController: UIViewController {
     
     @objc func searchBarCancelButtonTapped() {
         searchBarCancelButton.isHidden = true
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = NSLocalizedString("search", comment: "")
         searchBar.text = ""
         searchBar.endEditing(true)
         reloadVisibleCategroies()
@@ -388,7 +393,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
-    
 }
 
 extension TrackersViewController: UITextFieldDelegate {

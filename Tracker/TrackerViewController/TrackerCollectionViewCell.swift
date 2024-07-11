@@ -13,13 +13,12 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private var trackerId: UUID?
     private var indexPath: IndexPath?
     
-    var background = UIView()
-    var emoji = UILabel()
-    var emojiView = UIView()
-    var eventInfo = UILabel()
-
-    var daysCount = UILabel()
-    var completeButton = UIButton()
+    private var background = UIView()
+    private var emoji = UILabel()
+    private var emojiView = UIView()
+    private var eventInfo = UILabel()
+    private var daysCount = UILabel()
+    private var completeButton = UIButton()
     
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
@@ -40,8 +39,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         background.addSubview(eventInfo)
         emojiView.addSubview(emoji)
     
-        
-        
         emoji.translatesAutoresizingMaskIntoConstraints = false
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         background.translatesAutoresizingMaskIntoConstraints = false
@@ -75,8 +72,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             emoji.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
         ])
         
-       
-        
         NSLayoutConstraint.activate([
             completeButton.heightAnchor.constraint(equalToConstant: 34),
             completeButton.widthAnchor.constraint(equalToConstant: 34),
@@ -99,10 +94,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         emojiView.layer.cornerRadius = emojiView.frame.size.width / 2
         emojiView.layer.masksToBounds = true
         
-        emoji.text = "🌺"
         emoji.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
-        eventInfo.text = "Бабушка прислала открытку в вотсапе"
         eventInfo.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         eventInfo.textColor = .tWhite
         eventInfo.numberOfLines = 2
@@ -126,10 +119,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         if !cell.schedule.isEmpty {
             daysCount.text = wordDay(for: completedDays)
         } else {
-            daysCount.text = "Только сегодня"
+            daysCount.text = NSLocalizedString("todayOnly", comment: "")
         }
-        
-        
+    
         let image = isCompletedToday ? doneImage : plusImage
         let opacity = isCompletedToday || !isTomorrow ? 0.3 : 1
         
@@ -152,13 +144,13 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         var word = "\(number) "
         switch number {
         case 1, 21, 31:
-            word += "день"
+            word += NSLocalizedString("dayEndsWithOne", comment: "")
             break
         case 2, 3, 4, 22, 23, 24:
-            word += "дня"
+            word += NSLocalizedString("dayEndsWith234", comment: "")
             break
         default:
-            word += "дней"
+            word += NSLocalizedString("days", comment: "")
             break
         }
         

@@ -21,7 +21,7 @@ class ScheduleController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Расписание"
+        title = NSLocalizedString("schedule", comment: "")
         view.backgroundColor = .tWhite
         
         
@@ -58,7 +58,7 @@ class ScheduleController: UIViewController {
         confirmButton.backgroundColor = .tBlack
         confirmButton.tintColor = .tWhite
         confirmButton.layer.cornerRadius = 16
-        confirmButton.setTitle("Готово", for: .normal)
+        confirmButton.setTitle(NSLocalizedString("doneButton", comment: ""), for: .normal)
         
         
         view.addSubview(confirmButton)

@@ -1,6 +1,15 @@
 import UIKit
 
 class TabBarController: UITabBarController {
+    private lazy var trackersTabBarItemTitle = {
+        let title = NSLocalizedString("trackers", comment: "")
+        return title
+    }()
+    
+    private lazy var statisticTabBarItemTitle = {
+        let title = NSLocalizedString("statistic", comment: "")
+        return title
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -14,8 +23,8 @@ class TabBarController: UITabBarController {
         let trackersViewController = UINavigationController(rootViewController: TrackersViewController())
         let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController()) 
         
-        trackersViewController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "TrackersTabBar"), selectedImage: nil)
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "StatisticsTabBar"), selectedImage: nil)
+        trackersViewController.tabBarItem = UITabBarItem(title: trackersTabBarItemTitle, image: UIImage(named: "TrackersTabBar"), selectedImage: nil)
+        statisticsViewController.tabBarItem = UITabBarItem(title: statisticTabBarItemTitle, image: UIImage(named: "StatisticsTabBar"), selectedImage: nil)
         
         
         self.viewControllers = [trackersViewController, statisticsViewController]

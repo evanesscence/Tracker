@@ -1,0 +1,67 @@
+// MARK: - General
+trackers = "Trackers";
+statistic = "Statistics";
+
+// MARK: - Basic operations
+search = "Search";
+cancel = "Cancel";
+
+// MARK: - Schedule
+todayOnly = "Today only";
+dayEndsWithOne = "day";
+dayEndsWith234 = "days";
+days = "days";
+everyDay = "Every day";
+
+// MARK: - Tracker creation
+createTracker = "Create Tracker";
+habbit = "Habit";
+irregularEvent = "Irregular Event";
+
+// MARK: - Events
+category = "Category";
+schedule = "Schedule";
+newHabbit = "New Habit";
+newIrregularEvent = "New Irregular Event";
+
+// MARK: - Category creation
+newCategory = "New Category";
+
+// MARK: - Placeholders
+enterTrackerTitle = "Enter Tracker Title";
+enterCategoryTitle = "Enter Category Title";
+
+// MARK: - Tips
+characterLimit = "Character limit of 38";
+
+// MARK: - Buttons state
+cancelButton = "Cancel";
+createButton = "Create";
+addCategoryButton = "Add Category";
+doneButton = "Done";
+
+// MARK: - Sections
+сolor = "Color";
+
+emptyStateTitle = "What will we track?";
+delete = "Delete";
+deleteConfirmation = "Are you sure you want to delete the tracker?";
+
+eventsGrouped = "Habits and events can \n be grouped by meaning";
+
+// MARK: - WeekDays
+sunday = "Sunday";
+monday = "Monday";
+tuesday = "Tuesday";
+wednesday = "Wednesday";
+thursday = "Thursday";
+friday = "Friday";
+saturday = "Saturday";
+
+sun = "Sun";
+mon = "Mon";
+tue = "Tue";
+wed = "Wed";
+thu = "Thu";
+fri = "Fri";
+sat = "Sat";
