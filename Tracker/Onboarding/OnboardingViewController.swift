@@ -10,8 +10,8 @@ final class OnboardingViewController: UIPageViewController {
     }
     
     private lazy var pages: [PageViewController] = {
-        let firstPage = PageViewController(pageImageName: "FirstPage", pageDescription: "Отслеживайте только то, что хотите")
-        let secondPage = PageViewController(pageImageName: "SecondPage", pageDescription: "Даже если это не литры воды и йога")
+        let firstPage = PageViewController(pageImageName: "FirstPage", pageDescription: NSLocalizedString("onboardingFirstPage", comment: ""))
+        let secondPage = PageViewController(pageImageName: "SecondPage", pageDescription: NSLocalizedString("onboardingSecondPage", comment: ""))
         
         return [firstPage, secondPage]
     }()

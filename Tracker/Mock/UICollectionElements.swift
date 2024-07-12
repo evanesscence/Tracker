@@ -18,7 +18,7 @@ class UICollectionElements {
         ]),
         
         CollectionElements(
-            elementsName: NSLocalizedString("color", comment: ""),
+            elementsName: NSLocalizedString("bgColorSection", comment: ""),
             elements:
                 ["#FD4C49", "#FF881E", "#007BFA",
                  "#6E44FE", "#33CF69", "#E66DD4",

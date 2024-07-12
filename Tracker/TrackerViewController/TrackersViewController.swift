@@ -180,7 +180,7 @@ class TrackersViewController: UIViewController {
         
         let defaultText = UILabel()
         defaultText.translatesAutoresizingMaskIntoConstraints = false
-        defaultText.text = NSLocalizedString("emptyStateTitle", comment: "")
+        defaultText.text = NSLocalizedString("emptyState", comment: "")
         defaultText.font = .systemFont(ofSize: 12, weight: .medium)
         defaultText.textColor = .tBlack
     

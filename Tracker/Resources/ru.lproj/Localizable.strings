@@ -2,6 +2,11 @@
 trackers = "Трекеры";
 statistic = "Статистика";
 
+// MARK: - Onboarding
+onboardingFirstPage = "Отслеживайте только то, что хотите";
+onboardingSecondPage = "Даже если это не литры воды и йога";
+onboardingButton = "Вот это технологии!";
+
 // MARK: - Basic operations
 search = "Поиск";
 cancel = "Отменить";
@@ -33,6 +38,8 @@ enterCategoryTitle = "Введите название категории";
 
 // MARK: - Tips
 characterLimit = "Ограничение 38 символов";
+eventsGrouped = "Привычки и события можно \n объединить по смыслу";
+emptyState = "Что будем отслеживать?";
 
 // MARK: - Buttons state
 cancelButton = "Отмена";
@@ -41,13 +48,7 @@ addCategoryButton = "Добавить категорию";
 doneButton = "Готово";
 
 // MARK: - Sections
-сolor = "Цвет";
-
-emptyStateTitle = "Что будем отслеживать?";
-delete = "Удалить";
-deleteConfirmation = "Уверены что хотите удалить трекер?";
-
-eventsGrouped = "Привычки и события можно \n объединить по смыслу";
+bgColorSection = "Цвет";
 
 // MARK: - WeekDays
 sunday = "Воскресенье";

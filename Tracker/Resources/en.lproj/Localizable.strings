@@ -2,6 +2,11 @@
 trackers = "Trackers";
 statistic = "Statistics";
 
+// MARK: - Onboarding
+onboardingFirstPage = "Track only what you want";
+onboardingSecondPage = "Even if it's not liters of water and yoga";
+onboardingButton = "That's technology!";
+
 // MARK: - Basic operations
 search = "Search";
 cancel = "Cancel";
@@ -33,6 +38,8 @@ enterCategoryTitle = "Enter Category Title";
 
 // MARK: - Tips
 characterLimit = "Character limit of 38";
+emptyState = "What will we track?";
+eventsGrouped = "Habits and events can \n be grouped by meaning";
 
 // MARK: - Buttons state
 cancelButton = "Cancel";
@@ -41,13 +48,7 @@ addCategoryButton = "Add Category";
 doneButton = "Done";
 
 // MARK: - Sections
-сolor = "Color";
-
-emptyStateTitle = "What will we track?";
-delete = "Delete";
-deleteConfirmation = "Are you sure you want to delete the tracker?";
-
-eventsGrouped = "Habits and events can \n be grouped by meaning";
+bgColorSection = "Color";
 
 // MARK: - WeekDays
 sunday = "Sunday";

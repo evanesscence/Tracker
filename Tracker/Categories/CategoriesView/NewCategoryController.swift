@@ -3,7 +3,7 @@ import UIKit
 final class NewCategoryController: UIViewController {
     private var newCategory: String?
     private let trackerLabelTextField = TextField()
-    private let confirmButton = DarkButton(title: "Готово")
+    private let confirmButton = DarkButton(title: NSLocalizedString("doneButton", comment: ""))
     private let viewModel: CategoriesViewModel
     
     private lazy var dataProvider: TrackerCategoryStoreProtocol? = {

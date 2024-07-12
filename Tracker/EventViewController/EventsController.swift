@@ -272,7 +272,6 @@ class EventsController: UIViewController {
             createButton.isEnabled = false
             createButton.backgroundColor = .tTextFieldLabel
         }
-        
     }
     
     private func setupToHideKeyboardOnTapOnView() {

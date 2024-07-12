@@ -34,7 +34,7 @@ final class PageViewController: UIViewController {
     }()
     
     private let startButton: DarkButton = {
-        let button = DarkButton(title: "Вот это технологии!")
+        let button = DarkButton(title: NSLocalizedString("onboardingButton", comment: ""))
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
