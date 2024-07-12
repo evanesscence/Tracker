@@ -1,0 +1,14 @@
+{
+	daysCount = {
+		"NSStringLocalizedFormatKey" = "%#@days@";
+		days = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			zero = "0 \U0434\U043d\U0435\U0439";
+			one = "%d \U0434\U0435\U043d\U044c";
+			few = "%d  \U0434\U043d\U044f";
+			many = "%d  \U0434\U043d\U0435\U0439";
+			other = "%d \U0434\U043d\U044f";
+		};
+	};
+}

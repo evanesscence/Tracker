@@ -35,7 +35,7 @@ class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
-        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.locale = Locale.current
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.widthAnchor.constraint(equalToConstant: 77).isActive = true
         datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
@@ -45,7 +45,7 @@ class TrackersViewController: UIViewController {
     
     private lazy var dateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = Locale.current
         formatter.dateFormat = "dd.MM.yy"
         return formatter
     }()

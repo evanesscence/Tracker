@@ -1,0 +1,12 @@
+{
+	daysCount = {
+		"NSStringLocalizedFormatKey" = "%#@days@";
+		days = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			zero = "0 days";
+			one = "1 day";
+			other = "%d days";
+		};
+	};
+}

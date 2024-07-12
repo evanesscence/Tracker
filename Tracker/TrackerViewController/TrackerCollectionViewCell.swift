@@ -141,20 +141,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func wordDay(for number: Int) -> String {
-        var word = "\(number) "
-        switch number {
-        case 1, 21, 31:
-            word += NSLocalizedString("dayEndsWithOne", comment: "")
-            break
-        case 2, 3, 4, 22, 23, 24:
-            word += NSLocalizedString("dayEndsWith234", comment: "")
-            break
-        default:
-            word += NSLocalizedString("days", comment: "")
-            break
-        }
-        
-        return word
+        let dayString = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: ""),
+            number
+        )
+        return dayString
     }
     
     @objc
