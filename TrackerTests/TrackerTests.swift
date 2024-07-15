@@ -6,6 +6,6 @@ final class TrackerTests: XCTestCase {
     func testViewController() {
         let vc = TrackersViewController()
         
-        assertSnapshot(of: vc, as: .image)                                            
+        assertSnapshot(of: vc, as: .image)
     }
 }

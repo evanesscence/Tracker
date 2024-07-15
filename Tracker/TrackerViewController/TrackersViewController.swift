@@ -6,7 +6,8 @@ protocol TrackersViewControllerDelegate: AnyObject {
 
 class TrackersViewController: UIViewController {
     private let dataManager = DataManager.shared
-
+    private let analyticsService = AnalyticsService()
+    
     private var completedTrackers: [TrackerRecord] = []
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
@@ -262,6 +263,8 @@ class TrackersViewController: UIViewController {
     }
         
     @objc func createNewTracker() {
+        analyticsService.report(event: "create_tracker", params: ["test" : categories.count + 1])
+        
         let newTracker = NewTrackerController()
         newTracker.delegate = self
         

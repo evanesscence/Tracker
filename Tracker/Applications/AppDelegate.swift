@@ -20,9 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.rootViewController = OnboardingViewController()
         window?.makeKeyAndVisible()
+        
+        AnalyticsService.activate()
+        
         return true
     }
-
+ 
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
