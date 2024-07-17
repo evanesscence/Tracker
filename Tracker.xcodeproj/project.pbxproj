@@ -50,6 +50,8 @@
 		9AFC94512C44357400AF03DE /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9AFC94502C44357400AF03DE /* InlineSnapshotTesting */; };
 		9AFC94532C44357400AF03DE /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9AFC94522C44357400AF03DE /* SnapshotTesting */; };
 		9AFC94602C45462900AF03DE /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFC945F2C45462900AF03DE /* AnalyticsService.swift */; };
+		9AFC94622C46D1E000AF03DE /* TrackerFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFC94612C46D1E000AF03DE /* TrackerFilterViewController.swift */; };
+		9AFC94652C47F60800AF03DE /* TrackerFilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFC94642C47F60800AF03DE /* TrackerFilterCell.swift */; };
 		D74ECFC554BEFEAAA23CCD7A /* Pods_TrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7507D0B4131A4061E1C4E85D /* Pods_TrackerTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -114,6 +116,8 @@
 		9AFC94462C4434F500AF03DE /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AFC94482C4434F500AF03DE /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		9AFC945F2C45462900AF03DE /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		9AFC94612C46D1E000AF03DE /* TrackerFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerFilterViewController.swift; sourceTree = "<group>"; };
+		9AFC94642C47F60800AF03DE /* TrackerFilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerFilterCell.swift; sourceTree = "<group>"; };
 		B7711BF0041B372DF449738A /* Pods_Tracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1CB2D5D2790EB85512A5463 /* Pods-TrackerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrackerTests.release.xcconfig"; path = "Target Support Files/Pods-TrackerTests/Pods-TrackerTests.release.xcconfig"; sourceTree = "<group>"; };
 		DC5608800B4A52FD9D9B8B1D /* Pods-Tracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.release.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.release.xcconfig"; sourceTree = "<group>"; };
@@ -216,6 +220,7 @@
 		9A654BE62C120839001516D1 /* TrackerViewController */ = {
 			isa = PBXGroup;
 			children = (
+				9AFC94632C47F5D900AF03DE /* TrackerFilters */,
 				9AD7D1062C00CA91007AE680 /* TrackerHeaderCollectionView.swift */,
 				9A310C282BE4EDD3006A3F4D /* TrackersViewController.swift */,
 				9A623ED02BFE4A7F00C48A8A /* TrackerCollectionViewCell.swift */,
@@ -370,6 +375,15 @@
 				9AFC945F2C45462900AF03DE /* AnalyticsService.swift */,
 			);
 			path = Analytics;
+			sourceTree = "<group>";
+		};
+		9AFC94632C47F5D900AF03DE /* TrackerFilters */ = {
+			isa = PBXGroup;
+			children = (
+				9AFC94612C46D1E000AF03DE /* TrackerFilterViewController.swift */,
+				9AFC94642C47F60800AF03DE /* TrackerFilterCell.swift */,
+			);
+			path = TrackerFilters;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -559,6 +573,7 @@
 				9A4EF4682C05456C006E2F2C /* CategoryTableViewCell.swift in Sources */,
 				9A310C172BE4CE42006A3F4D /* TabBarController.swift in Sources */,
 				9A310C132BE4CE42006A3F4D /* AppDelegate.swift in Sources */,
+				9AFC94652C47F60800AF03DE /* TrackerFilterCell.swift in Sources */,
 				9A1ADF312C1DD3FE00DDF523 /* TrackerRecordStore.swift in Sources */,
 				9A00CDD22C1C4A1E009728E1 /* TrackerStore.swift in Sources */,
 				9A310C292BE4EDD3006A3F4D /* TrackersViewController.swift in Sources */,
@@ -572,6 +587,7 @@
 				9ACC80D52C18D0BA00127397 /* UICollectionElements.swift in Sources */,
 				9AD7D1072C00CA91007AE680 /* TrackerHeaderCollectionView.swift in Sources */,
 				9AE9D86A2BFA246400BD0D3F /* ScheduleTableViewCell.swift in Sources */,
+				9AFC94622C46D1E000AF03DE /* TrackerFilterViewController.swift in Sources */,
 				9A310C272BE4EDA7006A3F4D /* StatisticsViewController.swift in Sources */,
 				9A1ADF2F2C1DD37E00DDF523 /* TrackerCategoryStore.swift in Sources */,
 				9AD5F7002C3EE86700FF53D9 /* PageViewController.swift in Sources */,

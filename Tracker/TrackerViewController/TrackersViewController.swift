@@ -25,6 +25,20 @@ class TrackersViewController: UIViewController {
     private let addButton = UIButton()
     private let datePickerLabel = UILabel()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Фильтры", for: .normal)
+        button.setTitleColor(.tWhite, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        button.backgroundColor = .tBlue
+        button.layer.cornerRadius = 16
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        
+        return button
+    }()
+    
     private var trackerCollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: TrackerCollectionViewCell.reusedIdentifier)
@@ -74,6 +88,7 @@ class TrackersViewController: UIViewController {
         setupAddButton()
         setupDatePickerLabel()
         setupTrackerCollectionView()
+        setupFilterButton()
     }
     
     private func setupGeneral() {
@@ -210,6 +225,17 @@ class TrackersViewController: UIViewController {
         trackerCollectionView.dataSource = self
     }
     
+    private func setupFilterButton() {
+        view.addSubview(filterButton)
+        
+        NSLayoutConstraint.activate([
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
+        ])
+    }
+    
     private func reloadVisibleCategroies() {
         let calendar = Calendar.current
         let filterWeekDay = calendar.component(.weekday, from: datePicker.date)
@@ -290,6 +316,11 @@ class TrackersViewController: UIViewController {
     @objc func dismissKeyboard() {
         searchBarCancelButton.isHidden = true
         view.endEditing(true)
+    }
+    
+    @objc func filterButtonTapped() {
+        let trackerFilterViewController = TrackerFilterViewController()
+        present(UINavigationController(rootViewController: trackerFilterViewController), animated: true)
     }
 }
 
