@@ -19,6 +19,12 @@ final class TrackerFilterCell: UITableViewCell {
         return imageView
     }()
     
+    override var isSelected: Bool {
+        didSet {
+            isSelected ? setupSelectedCell() : setupDeselectedCell()
+        }
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -30,10 +36,6 @@ final class TrackerFilterCell: UITableViewCell {
     
     func configCell(with title: String) {
         filterLabel.text = title
-    }
-    
-    func shouldShowDoneIcon() {
-        doneIcon.image = doneIcon.image == .none ? UIImage(named: "Done") : .none
     }
     
     private func setupUI() {
@@ -59,5 +61,13 @@ final class TrackerFilterCell: UITableViewCell {
             filterLabel.centerYAnchor.constraint(equalTo: contentView.layoutMarginsGuide.centerYAnchor),
             filterLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
+    }
+    
+    private func setupSelectedCell() {
+        doneIcon.image = UIImage(named: "Done")
+    }
+    
+    private func setupDeselectedCell() {
+        doneIcon.image = .none
     }
 }

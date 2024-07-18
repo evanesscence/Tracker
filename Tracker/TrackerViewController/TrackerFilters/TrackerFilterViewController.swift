@@ -30,7 +30,6 @@ final class TrackerFilterViewController: UIViewController {
         filtersTableView.layer.cornerRadius = 16
         filtersTableView.clipsToBounds = true
         filtersTableView.alwaysBounceVertical = false
-        filtersTableView.allowsMultipleSelection = false
         filtersTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         filtersTableView.tableHeaderView = UIView()
         
@@ -56,9 +55,15 @@ extension TrackerFilterViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let filterTitle = filters[indexPath.row]
-        cell.configCell(with: filterTitle)
+        if let selectedFilter = UserDefaults.standard.object(forKey: "selectedFilter") as? Int {
+            if indexPath == IndexPath(row: selectedFilter, section: 0) {
+                cell.isSelected = true
+            }
+        }
         
+        let filterTitle = filters[indexPath.row]
+        
+        cell.configCell(with: filterTitle)
         setupTheLastCell(cell, at: indexPath)
         
         return cell
@@ -79,15 +84,8 @@ extension TrackerFilterViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? TrackerFilterCell else {
-            print("err")
-            return
-        }
-        
-        cell.shouldShowDoneIcon()
-        
-        filtersTableView.deselectRow(at: indexPath, animated: true)
-        
+        UserDefaults.standard.setValue(indexPath.row, forKey: "selectedFilter")
+        dismiss(animated: true)
     }
 }
 
