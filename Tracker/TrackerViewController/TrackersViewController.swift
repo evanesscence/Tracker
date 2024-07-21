@@ -107,8 +107,8 @@ class TrackersViewController: UIViewController {
     
     private func reloadData() {
         let fetchedCategories = trackerCategoryStore.trackers
-        
         categories = fetchedCategories
+         
         datePickerValueChanged()
     }
     
@@ -405,7 +405,63 @@ extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets(top: 12, left: 0, bottom: 16, right: 0)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerCollectionViewCell else {
+            return nil
+        }
+        
+        let preview = TrackerContextMenuPreview(
+            color: cell.getColor(),
+            emoji: cell.getEmoji(),
+            eventInfo: cell.getEventInfo(),
+            isPinned: cell.isPinned()
+        )
+        
+        let previewCell = TrackerContextMenuPreviewCell(frame: CGRect(x: 0, y: 0, width: cell.frame.width, height: 90))
+        
+        
+        let pinTitle = cell.isPinned() ? NSLocalizedString("unpin", comment: "") : NSLocalizedString("pin", comment: "")
+        
+        let contextMenu = UIContextMenuConfiguration(
+            previewProvider: {
+                let viewController = UIViewController()
+                previewCell.setupCell(for: preview)
+                
+                viewController.view.addSubview(previewCell)
+                viewController.preferredContentSize = CGSize(
+                    width: previewCell.frame.width,
+                    height: previewCell.frame.height
+                )
+                
+                return viewController
+            },
+            
+            actionProvider: { actions in
+                return UIMenu(children: [
+                    UIAction(title: pinTitle) { [weak self] _ in
+                        guard let self = self else { return }
+                        if pinTitle == NSLocalizedString("pin", comment: "") {
+                            cell.pinTracker()
+                            cell.setupPinnedTracker()
+                        } else {
+                            cell.unpinTracker()
+                            cell.setupUnpinnedTracker()
+                        }
+                        reloadData()
+                    },
+                    UIAction(title: NSLocalizedString("edit", comment: "")) { _ in
+                    },
+                    UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { _ in
+                    
+                    }
+                ])
+            })
+        return contextMenu
+    }
 }
+
+
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     

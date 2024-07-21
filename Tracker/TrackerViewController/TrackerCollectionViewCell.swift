@@ -19,6 +19,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private var eventInfo = UILabel()
     private var daysCount = UILabel()
     private var completeButton = UIButton()
+    private var pin = UIImageView()
     
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
@@ -37,6 +38,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         background.addSubview(emojiView)
         background.addSubview(eventInfo)
+        background.addSubview(pin)
         emojiView.addSubview(emoji)
     
         emoji.translatesAutoresizingMaskIntoConstraints = false
@@ -45,6 +47,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         eventInfo.translatesAutoresizingMaskIntoConstraints = false
         daysCount.translatesAutoresizingMaskIntoConstraints = false
         completeButton.translatesAutoresizingMaskIntoConstraints = false
+        pin.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             background.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -85,6 +88,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
            
         ])
         
+        NSLayoutConstraint.activate([
+            pin.topAnchor.constraint(equalTo: background.topAnchor, constant: 12),
+            pin.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -4),
+            pin.heightAnchor.constraint(equalToConstant: 24),
+            pin.widthAnchor.constraint(equalToConstant: 24)
+         
+        ])
+        
         background.backgroundColor = .purple
         background.layer.cornerRadius = 16
         background.layer.masksToBounds = true
@@ -104,6 +115,44 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         daysCount.textColor = .tBlack
     
         setupCompleteButton()
+    }
+    
+    func pinTracker() {
+        guard let trackerID = trackerId else { return }
+        TrackerStore().pinnedTracker(with: trackerID)
+    }
+    
+    func unpinTracker() {
+        guard let trackerID = trackerId else { return }
+        TrackerStore().unpinnedTracker(with: trackerID)
+    }
+    
+    func setupPinnedTracker() {
+        pin.image = UIImage(named: "Pin")
+    }
+    
+    func setupUnpinnedTracker() {
+        pin.image = .none
+    }
+    
+    func isPinned() -> Bool {
+        guard let trackerID = trackerId else { return false }
+        return TrackerStore().isPinnedTracker(with: trackerID)
+    }
+    
+    func getColor() -> UIColor {
+        guard let color = background.backgroundColor else { return .white }
+        return color
+    }
+    
+    func getEmoji() -> String {
+        guard let text = emoji.text else { return "" }
+        return text
+    }
+    
+    func getEventInfo() -> String {
+        guard let eventInfo = eventInfo.text else { return "" }
+        return eventInfo
     }
     
     func configTracker(for cell: Tracker, isCompletedToday: Bool, completedDays: Int, at indexPath: IndexPath, isTomorrow: Bool) {
@@ -128,6 +177,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         completeButton.layer.opacity = Float(opacity)
         completeButton.setImage(image, for: .normal)
         completeButton.isEnabled = isTomorrow
+        
+        isPinned() ? setupPinnedTracker() : setupUnpinnedTracker()
     }
     
     func setupCompleteButton() {

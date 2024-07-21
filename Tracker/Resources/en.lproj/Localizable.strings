@@ -10,6 +10,10 @@ onboardingButton = "That's technology!";
 // MARK: - Basic operations
 search = "Search";
 cancel = "Cancel";
+pin = "Pin";
+unpin = "Unpin";
+delete = "Delete";
+edit = "Edit";
 
 // MARK: - Schedule
 todayOnly = "Today only";
@@ -22,6 +26,9 @@ everyDay = "Every day";
 createTracker = "Create Tracker";
 habbit = "Habit";
 irregularEvent = "Irregular Event";
+
+// MARK: - Tracker states
+pinnedTracker = "Pinned";
 
 // MARK: - Events
 category = "Category";

@@ -10,6 +10,10 @@ onboardingButton = "Вот это технологии!";
 // MARK: - Basic operations
 search = "Поиск";
 cancel = "Отменить";
+pin = "Закрепить";
+unpin = "Открепить";
+delete = "Удалить";
+edit = "Редактировать";
 
 // MARK: - Schedule
 todayOnly = "Только сегодня";
@@ -22,6 +26,9 @@ everyDay = "Каждый день";
 createTracker = "Создание трекера";
 habbit = "Привычка";
 irregularEvent = "Нерегулярное событие";
+
+// MARK: - Tracker states
+pinnedTracker = "Закрепленные";
 
 // MARK: - Events
 category = "Категория";

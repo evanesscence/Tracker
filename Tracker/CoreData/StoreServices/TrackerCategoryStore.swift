@@ -50,6 +50,10 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     }()
     
     var trackersCD: [TrackerCategoryCoreData] {
+        let predicate = NSPredicate(format: "%K != %@", #keyPath(TrackerCategoryCoreData.name), NSLocalizedString("pinnedTracker", comment: ""))
+        fetchedResultsController.fetchRequest.predicate = predicate
+        try? fetchedResultsController.performFetch()
+        
         return self.fetchedResultsController.fetchedObjects ?? []
     }
     

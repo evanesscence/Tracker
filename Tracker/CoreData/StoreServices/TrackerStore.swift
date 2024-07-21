@@ -41,6 +41,47 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         return controller
     }()
     
+    public func isPinnedTracker(with trackerID: UUID) -> Bool {
+        let tracker = try? idsFetch(id: trackerID)
+        
+        if let pinned = tracker?.isPinned {
+            return pinned
+        }
+        
+        return false
+    }
+    
+    public func pinnedTracker(with trackerID: UUID) {
+        let pinnedTrackerName = NSLocalizedString("pinnedTracker", comment: "")
+        let tracker = try? idsFetch(id: trackerID)
+        
+        tracker?.categoryName = tracker?.category?.name
+        tracker?.isPinned = true
+        
+        if let pinned = try? TrackerCategoryStore().fetchCategoryByName(pinnedTrackerName) {
+            tracker?.category = pinned
+        } else {
+            try? TrackerCategoryStore().addNewCategory(TrackerCategory(name: pinnedTrackerName, trackers: []))
+            if let pinned = try? TrackerCategoryStore().fetchCategoryByName(pinnedTrackerName) {
+                tracker?.category = pinned
+            }
+        }
+        
+        try? context.save()
+    }
+    
+    public func unpinnedTracker(with trackerID: UUID) {
+        let tracker = try? idsFetch(id: trackerID)
+        tracker?.isPinned = false
+        
+        if let categoryName = tracker?.categoryName {
+            let lastCategoryName = try? TrackerCategoryStore().fetchCategoryByName(categoryName)
+            tracker?.category = lastCategoryName
+        }
+        
+        try? context.save()
+    }
+    
     public func add(tracker: Tracker, with category: String) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         
