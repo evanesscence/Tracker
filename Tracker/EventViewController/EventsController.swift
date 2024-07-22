@@ -10,6 +10,10 @@ enum TypeOfEvent {
     case irregularEvent
 }
 
+enum ActionWithTracker {
+    case edit
+}
+
 enum Properties: String, CaseIterable {
     case category
     case sсhedule
@@ -18,9 +22,13 @@ enum Properties: String, CaseIterable {
 class EventsController: UIViewController {
     var collectionElements = [CollectionElements]()
     var type: TypeOfEvent
+    var action: ActionWithTracker?
+    var editingTracker: Tracker?
+    var editingTrackerCategory: String?
     
-    init(type: TypeOfEvent) {
+    init(type: TypeOfEvent, action: ActionWithTracker?) {
         self.type = type
+        self.action = action
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -90,6 +98,17 @@ class EventsController: UIViewController {
         setupButtons()
         collectionViewConfig()
         
+        
+        setupEditFlow()
+    }
+    
+    func setupEditFlow() {
+        guard let tracker = editingTracker, let category = editingTrackerCategory else { return }
+        title = self.type == .habbit ? NSLocalizedString("editHabit", comment: "") : NSLocalizedString("editIrregularEvent", comment: "")
+        selectedCategory = category
+        setupSelectedDays(with: tracker.schedule)
+        trackerLabelTextField.text = tracker.name
+        
     }
     
     private func setupScrollAndContentViews() {
@@ -147,7 +166,6 @@ class EventsController: UIViewController {
         trackerLabelTextField.clearButtonMode = .whileEditing
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        
         trackerLabelTextField.addTarget(self, action: #selector(trackerLabelTextFieldEditingChanged(_:)), for: .editingChanged)
         
         hintOfTextField.isHidden = true
@@ -495,17 +513,20 @@ extension EventsController: EventsControllerProtocol {
     }
     
     func didConfirm(with days: [DaysOfWeek]) {
+        setupSelectedDays(with: days)
+        schedule = days
+        didSelectedDays = true
+        createButtonIsEnabled()
+        eventPropertiesTable.reloadData()
+    }
+    
+    private func setupSelectedDays(with days: [DaysOfWeek]) {
         if days.count == 7 {
             selectedDays = NSLocalizedString("everyDay", comment: "")
             
         } else {
             selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")
         }
-        
-        schedule = days
-        didSelectedDays = true
-        createButtonIsEnabled()
-        eventPropertiesTable.reloadData()
     }
 }
 

@@ -35,6 +35,8 @@ category = "Category";
 schedule = "Schedule";
 newHabbit = "New Habit";
 newIrregularEvent = "New Irregular Event";
+editHabit = "Habit Editing";
+editIrregularEvent = "Event Editing";
 
 // MARK: - Category creation
 newCategory = "New Category";

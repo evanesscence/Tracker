@@ -35,6 +35,8 @@ category = "Категория";
 schedule = "Расписание";
 newHabbit = "Новая привычка";
 newIrregularEvent = "Новое нерегулярное событие";
+editHabit = "Редактирование привычки";
+editIrregularEvent = "Редактирование события";
 
 // MARK: - Category creation
 newCategory = "Новая категория";

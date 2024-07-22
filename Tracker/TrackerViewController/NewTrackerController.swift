@@ -52,13 +52,13 @@ class NewTrackerController: UIViewController {
     }
     
     @objc private func addHabbit() {
-        let eventsController = EventsController(type: .habbit)
+        let eventsController = EventsController(type: .habbit, action: nil)
         eventsController.delegate = self
         present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
     }
     
     @objc private func addIrregularEvent() {
-        let eventsController = EventsController(type: .irregularEvent)
+        let eventsController = EventsController(type: .irregularEvent, action: nil)
         eventsController.delegate = self
         present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
     }

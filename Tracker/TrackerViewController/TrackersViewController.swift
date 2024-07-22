@@ -267,6 +267,7 @@ class TrackersViewController: UIViewController {
             )
         }
         
+        visibleCategories.sort { $0.name == NSLocalizedString("pinnedTracker", comment: "") && $1.name != NSLocalizedString("pinnedTracker", comment: "") }
         trackerCollectionView.reloadData()
         showPlaceholder()
     }
@@ -450,7 +451,9 @@ extension TrackersViewController: UICollectionViewDelegate {
                         }
                         reloadData()
                     },
-                    UIAction(title: NSLocalizedString("edit", comment: "")) { _ in
+                    UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
+                        guard let self = self else { return }
+                        showEditTrackerFlow(for: visibleCategories[indexPath.section].trackers[indexPath.row], with: visibleCategories[indexPath.section].name)
                     },
                     UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { _ in
                     
@@ -459,12 +462,24 @@ extension TrackersViewController: UICollectionViewDelegate {
             })
         return contextMenu
     }
+    
+    private func showEditTrackerFlow(for tracker: Tracker, with category: String) {
+        var trackerType = TypeOfEvent.habbit
+        
+        if !tracker.schedule.isEmpty {
+            trackerType = .habbit
+        } else {
+            trackerType = .irregularEvent
+        }
+        
+        let eventsController = EventsController(type: trackerType, action: .edit)
+        eventsController.editingTracker = tracker
+        eventsController.editingTrackerCategory = category
+        present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
+    }
 }
 
-
-
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let indexPath = IndexPath(row: 0, section: section)
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
