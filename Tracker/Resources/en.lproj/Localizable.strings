@@ -50,6 +50,7 @@ enterCategoryTitle = "Enter Category Title";
 characterLimit = "Character limit of 38";
 emptyState = "What will we track?";
 eventsGrouped = "Habits and events can \n be grouped by meaning";
+deleteWarning = "Are you sure you want to delete the tracker?";
 
 // MARK: - Buttons state
 cancelButton = "Cancel";

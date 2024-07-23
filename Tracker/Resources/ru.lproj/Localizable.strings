@@ -50,6 +50,7 @@ enterCategoryTitle = "Введите название категории";
 characterLimit = "Ограничение 38 символов";
 eventsGrouped = "Привычки и события можно \n объединить по смыслу";
 emptyState = "Что будем отслеживать?";
+deleteWarning = "Уверены, что хотите удалить трекер?";
 
 // MARK: - Buttons state
 cancelButton = "Отмена";

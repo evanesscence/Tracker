@@ -129,6 +129,13 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         try context.save()
     }
     
+    public func delete(tracker: Tracker) {
+        guard let trackerCoreData = try? idsFetch(id: tracker.id) else { return }
+        context.delete(trackerCoreData)
+        
+        try? context.save()
+    }
+    
     public func fetchTracker(by id: UUID) throws -> Tracker? {
         if let trackerCoreData = try idsFetch(id: id) {
             return try convertToTracker(trackerCoreData)

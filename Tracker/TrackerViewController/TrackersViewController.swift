@@ -108,7 +108,6 @@ class TrackersViewController: UIViewController {
     private func reloadData() {
         let fetchedCategories = trackerCategoryStore.trackers
         categories = fetchedCategories
-        
         datePickerValueChanged()
     }
     
@@ -439,26 +438,42 @@ extension TrackersViewController: UICollectionViewDelegate {
             },
             
             actionProvider: { actions in
-                return UIMenu(children: [
-                    UIAction(title: pinTitle) { [weak self] _ in
-                        guard let self = self else { return }
-                        if pinTitle == NSLocalizedString("pin", comment: "") {
-                            cell.pinTracker()
-                            cell.setupPinnedTracker()
-                        } else {
-                            cell.unpinTracker()
-                            cell.setupUnpinnedTracker()
+                return UIMenu(
+                    children: [
+                        UIAction(title: pinTitle) { [weak self] _ in
+                            guard let self = self else { return }
+                            if pinTitle == NSLocalizedString("pin", comment: "") {
+                                cell.pinTracker()
+                                cell.setupPinnedTracker()
+                            } else {
+                                cell.unpinTracker()
+                                cell.setupUnpinnedTracker()
+                            }
+                            reloadData()
+                        },
+                        
+                        UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
+                            guard let self = self else { return }
+                            showEditTrackerFlow(for: visibleCategories[indexPath.section].trackers[indexPath.row], with: visibleCategories[indexPath.section].name)
+                        },
+                        
+                        UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { [weak self] _ in
+                            guard let self = self else { return }
+                            let alertModel = AlertModel(
+                                title: nil,
+                                message: NSLocalizedString("deleteWarning", comment: "")
+                            )
+                            
+                            let alert = Alert().showDeleteAlert(for: alertModel) { [weak self] action in
+                                guard let self = self else { return }
+                                TrackerStore().delete(tracker: visibleCategories[indexPath.section].trackers[indexPath.row])
+                                reloadData()
+                            }
+                            
+                            present(alert, animated: true)
                         }
-                        reloadData()
-                    },
-                    UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
-                        guard let self = self else { return }
-                        showEditTrackerFlow(for: visibleCategories[indexPath.section].trackers[indexPath.row], with: visibleCategories[indexPath.section].name)
-                    },
-                    UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { _ in
-                    
-                    }
-                ])
+                    ]
+                )
             })
         return contextMenu
     }
