@@ -1,7 +1,7 @@
 import UIKit
 
 protocol TrackersViewControllerDelegate: AnyObject {
-    func createdNewTracker(tracker: TrackerCategory)
+    func reloadTrackers()
 }
 
 class TrackersViewController: UIViewController {
@@ -108,7 +108,7 @@ class TrackersViewController: UIViewController {
     private func reloadData() {
         let fetchedCategories = trackerCategoryStore.trackers
         categories = fetchedCategories
-         
+        
         datePickerValueChanged()
     }
     
@@ -474,6 +474,7 @@ extension TrackersViewController: UICollectionViewDelegate {
         
         let eventsController = EventsController(type: trackerType, action: .edit)
         eventsController.editingTracker = tracker
+        eventsController.trackersVCDelegate = self
         eventsController.editingTrackerCategory = category
         present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
     }
@@ -510,8 +511,7 @@ extension TrackersViewController: UITextFieldDelegate {
 }
 
 extension TrackersViewController: TrackersViewControllerDelegate {
-    func createdNewTracker(tracker: TrackerCategory) {
-        categories.append(tracker)
+    func reloadTrackers() {
         reloadData()
     }
 }

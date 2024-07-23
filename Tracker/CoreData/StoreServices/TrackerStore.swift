@@ -3,6 +3,7 @@ import CoreData
 
 protocol TrackerStoreProtocol: AnyObject {
     func add(tracker: Tracker, with category: String) throws
+    func edit(tracker: Tracker, with category: String) throws
 }
 
 private enum TrackerStoreError: Error {
@@ -40,6 +41,12 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         try? controller.performFetch()
         return controller
     }()
+    
+ 
+    public func getPinnedTrackerCategoryName(with trackerID: UUID) -> String? {
+        let tracker = try? idsFetch(id: trackerID)
+        return isPinnedTracker(with: trackerID) ? tracker?.categoryName : nil
+    }
     
     public func isPinnedTracker(with trackerID: UUID) -> Bool {
         let tracker = try? idsFetch(id: trackerID)
@@ -95,6 +102,28 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
             trackerCoreData.category = trackerCategoryCoreData
         } else {
             throw TrackerStoreError.decodingErrorInvalidTracker
+        }
+        
+        try context.save()
+    }
+    
+    public func edit(tracker: Tracker, with category: String) throws {
+        let trackerCoreData = try? idsFetch(id: tracker.id)
+  
+        trackerCoreData?.name = tracker.name
+        trackerCoreData?.emoji = tracker.emoji
+        trackerCoreData?.color = tracker.color.toHexString()
+        trackerCoreData?.schedule = convertToInt(schedule: tracker.schedule)
+        
+        if isPinnedTracker(with: tracker.id) {
+            trackerCoreData?.category?.name = NSLocalizedString("pinnedTracker", comment: "")
+            trackerCoreData?.categoryName = category
+        } else {
+            if let trackerCategoryCoreData = try TrackerCategoryStore().fetchCategoryByName(category) {
+                trackerCoreData?.category = trackerCategoryCoreData
+            } else {
+                throw TrackerStoreError.decodingErrorInvalidTracker
+            }
         }
         
         try context.save()

@@ -1,7 +1,7 @@
 import UIKit
 
 protocol NewTrackerViewControllerDelegate: AnyObject {
-    func createdNewTracker(tracker: TrackerCategory)
+    func reloadTrackers()
 }
 
 class NewTrackerController: UIViewController {
@@ -65,7 +65,7 @@ class NewTrackerController: UIViewController {
 }
 
 extension NewTrackerController: NewTrackerViewControllerDelegate {
-    func createdNewTracker(tracker: TrackerCategory) {
-        delegate?.createdNewTracker(tracker: tracker)
+    func reloadTrackers() {
+        delegate?.reloadTrackers()
     }
 }

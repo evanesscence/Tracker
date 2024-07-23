@@ -228,7 +228,6 @@
 				9A623ED02BFE4A7F00C48A8A /* TrackerCollectionViewCell.swift */,
 				9AD4A6E52BF73DC300BBEF25 /* TrackerPropertiesCell.swift */,
 				9AF449E62BF6157F0049FD2E /* NewTrackerController.swift */,
-				9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */,
 			);
 			path = TrackerViewController;
 			sourceTree = "<group>";
@@ -245,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				9AF449E82BF648F70049FD2E /* EventsController.swift */,
+				9ACC80D02C18C48400127397 /* ColorCollectionViewCell.swift */,
 				9A60698D2BF7C1AF000E65F9 /* EmojiViewCell.swift */,
 			);
 			path = EventViewController;

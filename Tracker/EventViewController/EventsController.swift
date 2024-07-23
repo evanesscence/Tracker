@@ -37,6 +37,7 @@ class EventsController: UIViewController {
     }
     
     weak var delegate: NewTrackerViewControllerDelegate?
+    weak var trackersVCDelegate: TrackersViewControllerDelegate?
     
     private var properties = [String]()
     private var selectedDays: String?
@@ -105,10 +106,23 @@ class EventsController: UIViewController {
     func setupEditFlow() {
         guard let tracker = editingTracker, let category = editingTrackerCategory else { return }
         title = self.type == .habbit ? NSLocalizedString("editHabit", comment: "") : NSLocalizedString("editIrregularEvent", comment: "")
-        selectedCategory = category
-        setupSelectedDays(with: tracker.schedule)
-        trackerLabelTextField.text = tracker.name
         
+        trackerLabelTextField.text = tracker.name
+        selectedCategory = category == NSLocalizedString("pinnedTracker", comment: "") ? TrackerStore().getPinnedTrackerCategoryName(with: tracker.id) : category
+
+        setupSelectedDays(with: tracker.schedule)
+        schedule = tracker.schedule
+        
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color.toHexString()
+        
+        didSelectedCategory = true
+        didSelectedDays = true
+        didSelectedEmoji = true
+        didSelectedColor = true
+        
+        createButton.setTitle(NSLocalizedString("save", comment: ""), for: .normal)
+        createButtonIsEnabled()
     }
     
     private func setupScrollAndContentViews() {
@@ -309,13 +323,25 @@ class EventsController: UIViewController {
             emoji: selectedEmoji,
             schedule: schedule)
         
-        let newHabbit = TrackerCategory(
-            name: selectedCategory,
-            trackers: [newTracker]
-        )
-        
         try? trackerStore?.add(tracker: newTracker, with: selectedCategory)
-        delegate?.createdNewTracker(tracker: newHabbit)
+        delegate?.reloadTrackers()
+    }
+    
+    private func editTracker() {
+        guard let editingTracker = editingTracker, let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedColor = selectedColor, let selectedDays = schedule, let selectedEmoji = selectedEmoji else {
+            return
+        }
+        
+        let newTracker = Tracker(
+            id: editingTracker.id,
+            name: trackerName,
+            color: UIColor(hexString: selectedColor),
+            emoji: selectedEmoji,
+            schedule: selectedDays)
+        
+        
+        try? trackerStore?.edit(tracker: newTracker, with: selectedCategory)
+        trackersVCDelegate?.reloadTrackers()
     }
     
     @objc func dismissKeyboard() {
@@ -330,21 +356,36 @@ class EventsController: UIViewController {
     
     @objc
     private func cancelButtonTapped() {
+        if let _ = editingTracker {
+            self.dismiss(animated: true)
+        }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
     
     @objc
     private func createButtonTapped() {
         if type == .habbit {
-            
+
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             
-            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: schedule, selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            if let _ = editingTracker  {
+                editTracker()
+            } else {
+                createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: schedule, selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            }
             
         } else {
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             
-            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: [], selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            if let _ = editingTracker  {
+                editTracker()
+            } else {
+                createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: [], selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            }
+        }
+        
+        if let _ = editingTracker {
+            self.dismiss(animated: true)
         }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
@@ -486,6 +527,11 @@ extension EventsController: UICollectionViewDataSource {
                 cell.emoji.text = collectionElements[indexPath.section].elements[indexPath.row]
                 cell.emoji.font = UIFont.systemFont(ofSize: 32)
                 
+                guard let editingTracker = editingTracker else { return cell }
+                if collectionElements[indexPath.section].elements[indexPath.row] == editingTracker.emoji {
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                }
+
                 reusedCell = cell
             }
         } else {
@@ -494,6 +540,12 @@ extension EventsController: UICollectionViewDataSource {
                 let cellColor = collectionElements[indexPath.section].elements[indexPath.row]
                 cell.configCell(with: cellColor)
                 
+                guard let editingTracker = editingTracker else { return cell }
+                if collectionElements[indexPath.section].elements[indexPath.row] == editingTracker.color.toHexString().uppercased() {
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                }
+                
+
                 reusedCell = cell
             }
         }

@@ -54,4 +54,9 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        colorView.backgroundColor = nil
+        label.text = nil
+    }
 }
