@@ -59,6 +59,10 @@ extension TrackerFilterViewController: UITableViewDataSource {
             if indexPath == IndexPath(row: selectedFilter, section: 0) {
                 cell.isSelected = true
             }
+        } else {
+            if filters[indexPath.row] == "Все трекеры" {
+                cell.isSelected = true
+            }
         }
         
         let filterTitle = filters[indexPath.row]

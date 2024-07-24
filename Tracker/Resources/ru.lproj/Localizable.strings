@@ -31,6 +31,9 @@ irregularEvent = "Нерегулярное событие";
 // MARK: - Tracker states
 pinnedTracker = "Закрепленные";
 
+// MARK: - Filters
+filterButton = "Фильтры";
+
 // MARK: - Events
 category = "Категория";
 schedule = "Расписание";

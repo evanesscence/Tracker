@@ -27,7 +27,7 @@ class TrackersViewController: UIViewController {
     
     private lazy var filterButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(NSLocalizedString("filterButton", comment: ""), for: .normal)
         button.setTitleColor(.tWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.backgroundColor = .tBlue
@@ -367,6 +367,16 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print(indexPath.item)
+        if indexPath.section == visibleCategories.count - 1 && indexPath.row == visibleCategories[indexPath.section].trackers.count - 1 {
+            filterButton.isHidden = true
+        } else {
+            filterButton.isHidden = false
+        }
+    }
+
     
     private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in

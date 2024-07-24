@@ -31,6 +31,9 @@ irregularEvent = "Irregular Event";
 // MARK: - Tracker states
 pinnedTracker = "Pinned";
 
+// MARK: - Filters
+filterButton = "Filters";
+
 // MARK: - Events
 category = "Category";
 schedule = "Schedule";
