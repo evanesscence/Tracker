@@ -2,6 +2,7 @@ import UIKit
 
 protocol TrackersViewControllerDelegate: AnyObject {
     func reloadTrackers()
+    func setFilter()
 }
 
 class TrackersViewController: UIViewController {
@@ -18,6 +19,22 @@ class TrackersViewController: UIViewController {
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
         return textField
+    }()
+    
+    private lazy var defaultImage = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "TrackersDefault")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var defaultText = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = NSLocalizedString("emptyState", comment: "")
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textColor = .tBlack
+        return label
     }()
     
     private let searchBarContainer = UIStackView()
@@ -81,6 +98,47 @@ class TrackersViewController: UIViewController {
         reloadData()
     }
     
+    func setFilter() {
+        if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("todayTrackers", comment: "") {
+            datePicker.date = Date()
+            datePickerLabel.text = dateFormatter.string(from: datePicker.date)
+            isFiltersModeOn(true)
+        }
+        
+        else if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("completedTrackers", comment: "") || UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("uncompletedTrackers", comment: "") {
+            showCompletedTrackers()
+            isFiltersModeOn(true)
+        }
+        
+        else {
+            isFiltersModeOn(false)
+        }
+    }
+    
+    func showCompletedTrackers() {
+        visibleCategories = visibleCategories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                var isCompleted = isTrackerCompletedToday(id: tracker.id)
+                if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("uncompletedTrackers", comment: "") {
+                    isCompleted.toggle()
+                }
+                return isCompleted
+            }
+            
+            if trackers.isEmpty {
+                defaultImage.image = UIImage(named: "NotFound")
+                defaultText.text = NSLocalizedString("notFound", comment: "")
+                
+                return nil
+            }
+            
+            return TrackerCategory(
+                name: category.name,
+                trackers: trackers
+            )
+        }
+    }
+    
     private func setupView() {
         setupGeneral()
         setupDefaultInfo()
@@ -108,7 +166,8 @@ class TrackersViewController: UIViewController {
     private func reloadData() {
         let fetchedCategories = trackerCategoryStore.trackers
         categories = fetchedCategories
-        datePickerValueChanged()
+        completedTrackers = trackerRecordStore.records
+        reloadVisibleCategroies()
     }
     
     private func setupAddButton() {
@@ -143,6 +202,11 @@ class TrackersViewController: UIViewController {
             datePickerLabel.heightAnchor.constraint(equalToConstant: 34),
             datePickerLabel.widthAnchor.constraint(equalToConstant: 80)
         ])
+    }
+    
+    private func isFiltersModeOn(_ mode: Bool) {
+        datePickerLabel.backgroundColor = mode ? .tBlue : .tGray
+        datePickerLabel.textColor = mode ? .tWhite : .tBlack
     }
     
     private func setupSearchBar() {
@@ -180,11 +244,8 @@ class TrackersViewController: UIViewController {
     }
     
     private func setupDefaultInfo() {
-        let defaultImage = UIImageView()
-        defaultImage.image = UIImage(named: "TrackersDefault")
-        defaultImage.translatesAutoresizingMaskIntoConstraints = false
-      
         view.addSubview(defaultImage)
+        view.addSubview(defaultText)
         
         NSLayoutConstraint.activate([
             defaultImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
@@ -192,15 +253,7 @@ class TrackersViewController: UIViewController {
             defaultImage.widthAnchor.constraint(equalToConstant: 80),
             defaultImage.heightAnchor.constraint(equalToConstant: 80)
         ])
-        
-        let defaultText = UILabel()
-        defaultText.translatesAutoresizingMaskIntoConstraints = false
-        defaultText.text = NSLocalizedString("emptyState", comment: "")
-        defaultText.font = .systemFont(ofSize: 12, weight: .medium)
-        defaultText.textColor = .tBlack
     
-        view.addSubview(defaultText)
-        
         NSLayoutConstraint.activate([
             defaultText.centerXAnchor.constraint(equalTo: defaultImage.centerXAnchor),
             defaultText.topAnchor.constraint(equalTo: defaultImage.bottomAnchor, constant: 8)
@@ -253,8 +306,14 @@ class TrackersViewController: UIViewController {
                 let irregularTracker = tracker.schedule.isEmpty ? currentDay : 0
                 let irregularTrackerDay = filterDay == irregularTracker
                 
+                if !textCondition {
+                    defaultImage.image = UIImage(named: "NotFound")
+                    defaultText.text = NSLocalizedString("notFound", comment: "")
+                }
+                
                 return textCondition && (dateCondition || irregularTrackerDay)
             }
+            
             
             if trackers.isEmpty {
                 return nil
@@ -266,6 +325,7 @@ class TrackersViewController: UIViewController {
             )
         }
         
+        setFilter()
         visibleCategories.sort { $0.name == NSLocalizedString("pinnedTracker", comment: "") && $1.name != NSLocalizedString("pinnedTracker", comment: "") }
         trackerCollectionView.reloadData()
         showPlaceholder()
@@ -273,15 +333,24 @@ class TrackersViewController: UIViewController {
     
     private func showPlaceholder() {
         trackerCollectionView.isHidden = visibleCategories.isEmpty
+        filterButton.isHidden = visibleCategories.isEmpty
     }
     
     @objc func datePickerValueChanged() {
         if Date() >= datePicker.date {
-            isTomorrow = true
-        } else if Date() < datePicker.date {
             isTomorrow = false
-        } else {
+        } else if Date() < datePicker.date {
             isTomorrow = true
+        } else {
+            isTomorrow = false
+        }
+        
+        if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("completedTrackers", comment: "") || UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("uncompletedTrackers", comment: "") {
+            showCompletedTrackers()
+        } else {
+            UserDefaults.standard.setValue(NSLocalizedString("allTrackers", comment: ""), forKey: "selectedFilter")
+            defaultImage.image = UIImage(named: "TrackersDefault")
+            defaultText.text = NSLocalizedString("emptyState", comment: "")
         }
         
         datePickerLabel.text = dateFormatter.string(from: datePicker.date)
@@ -310,6 +379,8 @@ class TrackersViewController: UIViewController {
         searchBar.placeholder = NSLocalizedString("search", comment: "")
         searchBar.text = ""
         searchBar.endEditing(true)
+        defaultImage.image = UIImage(named: "TrackersDefault")
+        defaultText.text = NSLocalizedString("emptyState", comment: "")
         reloadVisibleCategroies()
     }
     
@@ -320,6 +391,7 @@ class TrackersViewController: UIViewController {
     
     @objc func filterButtonTapped() {
         let trackerFilterViewController = TrackerFilterViewController()
+        trackerFilterViewController.delegate = self
         present(UINavigationController(rootViewController: trackerFilterViewController), animated: true)
     }
 }
@@ -369,10 +441,10 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print(indexPath.item)
-        if indexPath.section == visibleCategories.count - 1 && indexPath.row == visibleCategories[indexPath.section].trackers.count - 1 {
+        if (indexPath.section > 0 && indexPath.section == visibleCategories.count - 1) && indexPath.row == visibleCategories[indexPath.section].trackers.count - 1 {
             filterButton.isHidden = true
-        } else {
+        }
+        else {
             filterButton.isHidden = false
         }
     }

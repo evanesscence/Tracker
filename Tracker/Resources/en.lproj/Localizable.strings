@@ -33,6 +33,10 @@ pinnedTracker = "Pinned";
 
 // MARK: - Filters
 filterButton = "Filters";
+allTrackers = "All trackers";
+todayTrackers = "Today's trackers";
+completedTrackers = "Completed trackers";
+uncompletedTrackers = "Uncompleted trackers";
 
 // MARK: - Events
 category = "Category";
@@ -54,6 +58,7 @@ characterLimit = "Character limit of 38";
 emptyState = "What will we track?";
 eventsGrouped = "Habits and events can \n be grouped by meaning";
 deleteWarning = "Are you sure you want to delete the tracker?";
+notFound = "No results found";
 
 // MARK: - Buttons state
 cancelButton = "Cancel";

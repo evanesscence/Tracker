@@ -1,7 +1,27 @@
 import UIKit
 
 final class TrackerFilterViewController: UIViewController {
-    private let filters: [String] = ["Все трекеры", "Трекеры на сегодня", "Завершенные", "Незавершенные"]
+    weak var delegate: TrackersViewControllerDelegate?
+    
+    private let filters: [String] = [
+        NSLocalizedString(
+            "allTrackers",
+            comment: ""
+        ),
+        NSLocalizedString(
+            "todayTrackers",
+            comment: ""
+        ),
+        NSLocalizedString(
+            "completedTrackers",
+            comment: ""
+        ),
+        NSLocalizedString(
+            "uncompletedTrackers",
+            comment: ""
+        )
+    ]
+    
     private lazy var filtersTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(TrackerFilterCell.self, forCellReuseIdentifier: TrackerFilterCell.reuseIdentifier)
@@ -18,7 +38,7 @@ final class TrackerFilterViewController: UIViewController {
     }
     
     private func setupView() {
-        navigationItem.title = "Фильтры"
+        navigationItem.title = NSLocalizedString("filterButton", comment: "")
         view.backgroundColor = .tWhite
         
         setupFiltersTableView()
@@ -55,12 +75,12 @@ extension TrackerFilterViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        if let selectedFilter = UserDefaults.standard.object(forKey: "selectedFilter") as? Int {
-            if indexPath == IndexPath(row: selectedFilter, section: 0) {
+        if let selectedFilter = UserDefaults.standard.object(forKey: "selectedFilter") as? String {
+            if filters[indexPath.row] == selectedFilter {
                 cell.isSelected = true
             }
         } else {
-            if filters[indexPath.row] == "Все трекеры" {
+            if filters[indexPath.row] == NSLocalizedString("allTrackers", comment: "") {
                 cell.isSelected = true
             }
         }
@@ -88,7 +108,12 @@ extension TrackerFilterViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        UserDefaults.standard.setValue(indexPath.row, forKey: "selectedFilter")
+        let chosenFilter = filters[indexPath.row]
+        UserDefaults.standard.setValue(chosenFilter, forKey: "selectedFilter")
+        
+        delegate?.setFilter()
+        delegate?.reloadTrackers()
+        
         dismiss(animated: true)
     }
 }

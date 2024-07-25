@@ -33,6 +33,10 @@ pinnedTracker = "Закрепленные";
 
 // MARK: - Filters
 filterButton = "Фильтры";
+allTrackers = "Все трекеры";
+todayTrackers = "Трекеры на сегодня";
+completedTrackers = "Завершенные";
+uncompletedTrackers = "Незавершенные";
 
 // MARK: - Events
 category = "Категория";
@@ -54,6 +58,7 @@ characterLimit = "Ограничение 38 символов";
 eventsGrouped = "Привычки и события можно \n объединить по смыслу";
 emptyState = "Что будем отслеживать?";
 deleteWarning = "Уверены, что хотите удалить трекер?";
+notFound = "Ничего не найдено";
 
 // MARK: - Buttons state
 cancelButton = "Отмена";
