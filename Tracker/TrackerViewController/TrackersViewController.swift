@@ -45,7 +45,7 @@ class TrackersViewController: UIViewController {
     private lazy var filterButton: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("filterButton", comment: ""), for: .normal)
-        button.setTitleColor(.tWhite, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.backgroundColor = .tBlue
         button.layer.cornerRadius = 16
@@ -191,7 +191,7 @@ class TrackersViewController: UIViewController {
         datePickerLabel.textAlignment = .center
         datePickerLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         datePickerLabel.backgroundColor = .tGray
-        datePickerLabel.textColor = .tBlack
+        datePickerLabel.textColor = UIColor.black
         
         view.addSubview(datePicker)
         datePicker.addSubview(datePickerLabel)
@@ -206,7 +206,7 @@ class TrackersViewController: UIViewController {
     
     private func isFiltersModeOn(_ mode: Bool) {
         datePickerLabel.backgroundColor = mode ? .tBlue : .tGray
-        datePickerLabel.textColor = mode ? .tWhite : .tBlack
+        datePickerLabel.textColor = mode ? .white : .black
     }
     
     private func setupSearchBar() {
@@ -261,6 +261,7 @@ class TrackersViewController: UIViewController {
     }
     
     private func setupTrackerCollectionView() {
+        trackerCollectionView.backgroundColor = .tWhite
         trackerCollectionView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         trackerCollectionView.showsVerticalScrollIndicator = false
         view.addSubview(trackerCollectionView)

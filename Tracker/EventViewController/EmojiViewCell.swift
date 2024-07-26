@@ -29,7 +29,7 @@ class EmojiViewCell: UICollectionViewCell {
     }
     
     private func setupDeselectedCell() {
-        backgroundColor = .white
+        backgroundColor = .none
     }
     
     required init?(coder: NSCoder) {

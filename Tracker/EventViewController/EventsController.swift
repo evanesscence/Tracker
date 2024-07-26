@@ -91,7 +91,7 @@ class EventsController: UIViewController {
         setupToHideKeyboardOnTapOnView()
         trackerLabelTextField.delegate = self
         
-        view.backgroundColor = .white
+        view.backgroundColor = .tWhite
         setupEventData()
         
         trackerLabelTextFieldConfig()
@@ -140,6 +140,8 @@ class EventsController: UIViewController {
         ])
         
         contentView.frame.size = CGSize(width: view.frame.width, height: view.frame.height)
+        contentView.backgroundColor = .tWhite
+        scrollView.backgroundColor = .tWhite
         scrollView.addSubview(contentView)
     }
     

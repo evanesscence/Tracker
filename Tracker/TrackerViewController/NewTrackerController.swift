@@ -11,7 +11,7 @@ class NewTrackerController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .tWhite
         navigationItem.title = NSLocalizedString("createTracker", comment: "")
         
         buttonsConfig([habbitButton, irregularEventButton])
@@ -22,6 +22,7 @@ class NewTrackerController: UIViewController {
     private func buttonsConfig(_ buttons: [UIButton]) {
         buttons.forEach { button in
             button.backgroundColor = .tBlack
+            button.setTitleColor(.tWhite, for: .normal)
             button.layer.cornerRadius = 16
             button.layer.masksToBounds = true
             button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

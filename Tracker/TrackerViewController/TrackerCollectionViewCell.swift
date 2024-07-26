@@ -108,7 +108,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         emoji.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
         eventInfo.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        eventInfo.textColor = .tWhite
+        eventInfo.textColor = .white
         eventInfo.numberOfLines = 2
        
         daysCount.font = UIFont.systemFont(ofSize: 12, weight: .medium)
