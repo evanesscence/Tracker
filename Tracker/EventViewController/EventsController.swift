@@ -473,6 +473,8 @@ extension EventsController: UICollectionViewDelegateFlowLayout {
 
 extension EventsController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        collectionView.reloadItems(at: [indexPath])
+        
         let section = collectionElements[indexPath.section]
         if section.elementsName == "Emoji" {
             selectedEmoji = section.elements[indexPath.row]
