@@ -92,10 +92,20 @@ class TrackersViewController: UIViewController {
         return trackerRecordStore
     }()
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analyticsService.report(event: "open", params: ["screen": "Main"])
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         reloadData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen": "Main"])
     }
     
     func setFilter() {
@@ -359,7 +369,7 @@ class TrackersViewController: UIViewController {
     }
         
     @objc func createNewTracker() {
-        analyticsService.report(event: "create_tracker", params: ["test" : categories.count + 1])
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "add_track"])
         
         let newTracker = NewTrackerController()
         newTracker.delegate = self
@@ -391,6 +401,7 @@ class TrackersViewController: UIViewController {
     }
     
     @objc func filterButtonTapped() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "filter"])
         let trackerFilterViewController = TrackerFilterViewController()
         trackerFilterViewController.delegate = self
         present(UINavigationController(rootViewController: trackerFilterViewController), animated: true)
@@ -537,11 +548,13 @@ extension TrackersViewController: UICollectionViewDelegate {
                         
                         UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
                             guard let self = self else { return }
+                            analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
                             showEditTrackerFlow(for: visibleCategories[indexPath.section].trackers[indexPath.row], with: visibleCategories[indexPath.section].name)
                         },
                         
                         UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { [weak self] _ in
                             guard let self = self else { return }
+                            analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "delete"])
                             let alertModel = AlertModel(
                                 title: nil,
                                 message: NSLocalizedString("deleteWarning", comment: "")

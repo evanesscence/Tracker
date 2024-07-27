@@ -7,7 +7,7 @@ protocol TrackerCollectionViewCellProtocol: AnyObject {
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let reusedIdentifier = "TrackerCollectionViewCell"
-    
+
     weak var delegate: TrackerCollectionViewCellProtocol?
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
@@ -28,6 +28,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }()
     
     private let doneImage = UIImage(named: "DoneButton")
+    private let analyticsService = AnalyticsService()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -202,6 +203,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     @objc
     private func completeButtonTapped() {
         guard let trackerId = trackerId, let indexPath = indexPath else { return }
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
         isCompletedToday ? delegate?.uncompleteTracker(id: trackerId, at: indexPath) : delegate?.completeTracker(id: trackerId, at: indexPath)
     }
     
