@@ -101,7 +101,7 @@ extension ScheduleController: UITableViewDataSource {
             print("err")
             return UITableViewCell()
         }
-        
+    
         cell.delegate = self
         
         let dayName = days[indexPath.row]

@@ -94,6 +94,7 @@ class EventsController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UserDefaults.standard.removeObject(forKey: "selectedCategory")
         
         collectionElements = UICollectionElements.shared.elements
         

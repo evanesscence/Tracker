@@ -147,6 +147,7 @@ extension CategoriesController: UITableViewDelegate {
         }
         
         cell.shouldShowDoneIcon()
+        UserDefaults.standard.setValue(viewModel.categories[indexPath.row].id, forKey: "selectedCategory")
         
         categoriesTableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectCategory(category: viewModel.categories[indexPath.row])
@@ -160,10 +161,6 @@ extension CategoriesController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewCell else {
-            return nil
-        }
-        
         let contextMenu = UIContextMenuConfiguration(
             actionProvider: { actions in
                 return UIMenu(
@@ -223,6 +220,11 @@ extension CategoriesController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.reuseIdentifier, for: indexPath) as? CategoryTableViewCell else {
             return UITableViewCell()
+        }
+        
+        if UserDefaults.standard.object(forKey: "selectedCategory") as? String == viewModel.categories[indexPath.row].id {
+            cell.isSelected = true
+            cell.shouldShowDoneIcon()
         }
         
         let category = viewModel.categories[indexPath.row]
