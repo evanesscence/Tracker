@@ -77,6 +77,25 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         try context.save()
     }
     
+    func editCategory(oldCategoryName: String, newCategoryName: String) throws {
+        guard let trackerCategoryCoreData = try? fetchCategoryByName(oldCategoryName) else { return }
+        trackerCategoryCoreData.name = newCategoryName
+        
+        try context.save()
+    }
+    
+    func deleteCategory(_ name: String) throws {
+        guard let trackerCategoryCoreData = try? fetchCategoryByName(name) else { return }
+        context.delete(trackerCategoryCoreData)
+        
+        try context.save()
+    }
+    
+    func hasTrackers(_ name: String) -> Bool {
+        guard let trackerCategoryCoreData = try? fetchCategoryByName(name) else { return false }
+        return !(trackerCategoryCoreData.trackers?.allObjects.isEmpty ?? false)
+    }
+    
     private func convertToTrackerCategory(from trackerCategoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let categoryTitle = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryTitle

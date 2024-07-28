@@ -52,6 +52,9 @@ final class CategoriesViewModel {
         try? categoryStore.addNewCategory(category)
     }
     
+    func editCategory(oldCategoryName: String, newCategoryName: String) {
+        try? categoryStore.editCategory(oldCategoryName: oldCategoryName, newCategoryName: newCategoryName)
+    }
     
     func selectCategory(category: CategoryViewModel) {
         selectedCategory = category

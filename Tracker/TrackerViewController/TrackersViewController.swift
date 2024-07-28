@@ -92,6 +92,11 @@ class TrackersViewController: UIViewController {
         return trackerRecordStore
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         analyticsService.report(event: "open", params: ["screen": "Main"])
@@ -513,8 +518,6 @@ extension TrackersViewController: UICollectionViewDelegate {
         )
         
         let previewCell = TrackerContextMenuPreviewCell(frame: CGRect(x: 0, y: 0, width: cell.frame.width, height: 90))
-        
-        
         let pinTitle = cell.isPinned() ? NSLocalizedString("unpin", comment: "") : NSLocalizedString("pin", comment: "")
         
         let contextMenu = UIContextMenuConfiguration(
@@ -573,6 +576,7 @@ extension TrackersViewController: UICollectionViewDelegate {
                     ]
                 )
             })
+        
         return contextMenu
     }
     

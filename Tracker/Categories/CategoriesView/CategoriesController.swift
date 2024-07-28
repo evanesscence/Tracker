@@ -130,6 +130,7 @@ final class CategoriesController: UIViewController {
     private func addCategoryButtonTapped() {
         let vc = NewCategoryController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
         let navigationController = UINavigationController(rootViewController: vc)
+       
         present(navigationController, animated: true)
     }
 }
@@ -157,6 +158,61 @@ extension CategoriesController: UITableViewDelegate {
         
         self.dismiss(animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewCell else {
+            return nil
+        }
+        
+        let contextMenu = UIContextMenuConfiguration(
+            actionProvider: { actions in
+                return UIMenu(
+                    children: [
+                        UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
+                            guard let self = self else { return }
+                            AnalyticsService().report(event: "click", params: ["screen" : "Main", "item" : "edit"])
+                            
+                            let editCategoryController = NewCategoryController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
+                            let navigationController = UINavigationController(rootViewController: editCategoryController)
+                            
+                            editCategoryController.isCategoryEditing = true
+                            editCategoryController.changedCategory = viewModel.categories[indexPath.row].name
+                            
+                            present(navigationController, animated: true)
+                        },
+                        
+                        UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { [weak self] _ in
+                            guard let self = self else { return }
+                            AnalyticsService().report(event: "click", params: ["screen" : "Main", "item" : "delete"])
+                            
+                            if TrackerCategoryStore().hasTrackers(viewModel.categories[indexPath.row].name) {
+                                let alertModel = AlertModel(
+                                    title: NSLocalizedString("deleteCategoryAlertTitle", comment: ""),
+                                    message: NSLocalizedString("deleteCategoryAlertMessage", comment: "")
+                                )
+                                let alert = Alert().showWarningAlert(for: alertModel, action: nil)
+                                present(alert, animated: true)
+                            } else {
+                                let alertModel = AlertModel(
+                                    title: nil,
+                                    message: NSLocalizedString("deleteCategoryWarning", comment: "")
+                                )
+                                
+                                let alert = Alert().showDeleteAlert(for: alertModel) { [weak self] action in
+                                    guard let self = self else { return }
+                                    
+                                    try? TrackerCategoryStore().deleteCategory(viewModel.categories[indexPath.row].name)
+                                }
+                                present(alert, animated: true)
+                            }
+                        }
+                    ]
+                )
+            })
+        
+        return contextMenu
+    }
+    
 }
 
 extension CategoriesController: UITableViewDataSource {
@@ -184,7 +240,8 @@ extension CategoriesController: UITableViewDataSource {
         
         return cell
     }
-    
 }
+
+
 
 

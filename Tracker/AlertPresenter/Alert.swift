@@ -17,4 +17,13 @@ final class Alert {
         
         return alert
     }
+    
+    func showWarningAlert(for model: AlertModel, action: ((UIAlertAction) -> Void)?) -> UIAlertController {
+        let alert = UIAlertController(title: model.title, message: model.message, preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: NSLocalizedString("ok", comment: ""), style: .cancel, handler: action)
+        
+        alert.addAction(deleteAction)
+        
+        return alert
+    }
 }

@@ -1,6 +1,9 @@
 import UIKit
 
 final class NewCategoryController: UIViewController {
+    var isCategoryEditing = false
+    var changedCategory: String?
+    
     private var newCategory: String?
     private let trackerLabelTextField = TextField()
     private let confirmButton = DarkButton(title: NSLocalizedString("doneButton", comment: ""))
@@ -21,7 +24,7 @@ final class NewCategoryController: UIViewController {
     }
     
     override func viewDidLoad() {
-        navigationItem.title = NSLocalizedString("newCategory", comment: "")
+        navigationItem.title = isCategoryEditing ? NSLocalizedString("editCategory", comment: "") : NSLocalizedString("newCategory", comment: "")
         view.backgroundColor = .white
         
         setupConfirmButton()
@@ -93,7 +96,11 @@ final class NewCategoryController: UIViewController {
     @objc
     private func confirmButtonTapped() {
         if let newCategory = newCategory {
-            viewModel.addNewCategory(category: TrackerCategory(name: newCategory, trackers: []))
+            if let changedCategory = changedCategory {
+                viewModel.editCategory(oldCategoryName: changedCategory, newCategoryName: newCategory)
+            } else {
+                viewModel.addNewCategory(category: TrackerCategory(name: newCategory, trackers: []))
+            }
         }
         
         dismiss(animated: true)
@@ -104,6 +111,5 @@ final class NewCategoryController: UIViewController {
         newCategory = textField.text
         confirmButtonIsEnabled()
     }
-
 }
 

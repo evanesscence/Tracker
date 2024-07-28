@@ -15,6 +15,7 @@ unpin = "Unpin";
 delete = "Delete";
 edit = "Edit";
 save = "Save";
+ok = "Oк";
 
 // MARK: - Schedule
 todayOnly = "Today only";
@@ -54,6 +55,7 @@ editIrregularEvent = "Event Editing";
 
 // MARK: - Category creation
 newCategory = "New Category";
+editCategory = "Category Editing";
 
 // MARK: - Placeholders
 enterTrackerTitle = "Enter Tracker Title";
@@ -64,8 +66,12 @@ characterLimit = "Character limit of 38";
 emptyState = "What will we track?";
 eventsGrouped = "Habits and events can \n be grouped by meaning";
 deleteWarning = "Are you sure you want to delete the tracker?";
+deleteCategoryWarning = "Are you sure you want to delete the category?";
 notFound = "No results found";
 statisticsDefaultInfo = "There is nothing to analyze yet";
+deleteCategoryAlertTitle = "Failed to delete category";
+deleteCategoryAlertMessage = "The category contains trackers. Please delete the trackers associated with the selected category and try again.";
+
 
 // MARK: - Buttons state
 cancelButton = "Cancel";

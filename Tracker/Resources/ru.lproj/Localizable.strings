@@ -15,6 +15,7 @@ unpin = "Открепить";
 delete = "Удалить";
 edit = "Редактировать";
 save = "Сохранить";
+ok = "Oк";
 
 // MARK: - Schedule
 todayOnly = "Только сегодня";
@@ -54,6 +55,7 @@ editIrregularEvent = "Редактирование события";
 
 // MARK: - Category creation
 newCategory = "Новая категория";
+editCategory = "Редактирование категории";
 
 // MARK: - Placeholders
 enterTrackerTitle = "Введите название трекера";
@@ -64,8 +66,11 @@ characterLimit = "Ограничение 38 символов";
 eventsGrouped = "Привычки и события можно \n объединить по смыслу";
 emptyState = "Что будем отслеживать?";
 deleteWarning = "Уверены, что хотите удалить трекер?";
+deleteCategoryWarning = "Уверены, что хотите удалить трекер?";
 notFound = "Ничего не найдено";
 statisticsDefaultInfo = "Анализировать пока нечего";
+deleteCategoryAlertTitle = "Не удалось удалить категорию";
+deleteCategoryAlertMessage = "Категория содержит трекеры. Удалите трекеры с выбранной категорией и повторите попытку";
 
 // MARK: - Buttons state
 cancelButton = "Отмена";
