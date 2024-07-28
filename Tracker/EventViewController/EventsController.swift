@@ -20,11 +20,21 @@ enum Properties: String, CaseIterable {
 }
 
 class EventsController: UIViewController {
+    private let trackersDaysCount: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .tBlack
+        
+        return label
+    }()
+    
     var collectionElements = [CollectionElements]()
     var type: TypeOfEvent
     var action: ActionWithTracker?
     var editingTracker: Tracker?
     var editingTrackerCategory: String?
+    var editingTrackerDaysCount: Int?
     
     init(type: TypeOfEvent, action: ActionWithTracker?) {
         self.type = type
@@ -104,8 +114,9 @@ class EventsController: UIViewController {
     }
     
     func setupEditFlow() {
-        guard let tracker = editingTracker, let category = editingTrackerCategory else { return }
+        guard let tracker = editingTracker, let category = editingTrackerCategory, let editingTrackerDaysCount = editingTrackerDaysCount else { return }
         title = self.type == .habbit ? NSLocalizedString("editHabit", comment: "") : NSLocalizedString("editIrregularEvent", comment: "")
+        setupTrackersDaysCount(editingTrackerDaysCount)
         
         trackerLabelTextField.text = tracker.name
         selectedCategory = category == NSLocalizedString("pinnedTracker", comment: "") ? TrackerStore().getPinnedTrackerCategoryName(with: tracker.id) : category
@@ -121,8 +132,31 @@ class EventsController: UIViewController {
         didSelectedEmoji = true
         didSelectedColor = true
         
+        action = .edit
+        
         createButton.setTitle(NSLocalizedString("save", comment: ""), for: .normal)
         createButtonIsEnabled()
+    }
+    
+    private func setupTrackersDaysCount(_ completedDays: Int) {
+        view.addSubview(trackersDaysCount)
+        trackersDaysCount.text = wordDay(for: completedDays)
+        trackersDaysCount.textAlignment = .center
+        
+        NSLayoutConstraint.activate([
+            trackersDaysCount.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            trackersDaysCount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            trackersDaysCount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+        ])
+    }
+    
+    private func wordDay(for number: Int) -> String {
+        let dayString = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: ""),
+            number
+        )
+        
+        return dayString
     }
     
     private func setupScrollAndContentViews() {
@@ -166,7 +200,9 @@ class EventsController: UIViewController {
         trackerTextFieldContainer.alignment = .fill
         trackerTextFieldContainer.distribution = .fill
         
-        trackerTextFieldContainer.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+        let top = action == .edit ? 86 : 0.0
+        
+        trackerTextFieldContainer.layoutMargins = UIEdgeInsets(top: top, left: 0, bottom: 8, right: 0)
         trackerTextFieldContainer.isLayoutMarginsRelativeArrangement = true
         
         trackerTextFieldContainer.addArrangedSubview(trackerLabelTextField)

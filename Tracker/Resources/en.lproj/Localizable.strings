@@ -31,6 +31,12 @@ irregularEvent = "Irregular Event";
 // MARK: - Tracker states
 pinnedTracker = "Pinned";
 
+// MARK: - Statistics states
+bestPeriod = "Best Period";
+perfectDays = "Perfect Days";
+trackersCompleted = "Trackers Completed";
+averageValue = "Average Value";
+
 // MARK: - Filters
 filterButton = "Filters";
 allTrackers = "All trackers";
@@ -59,6 +65,7 @@ emptyState = "What will we track?";
 eventsGrouped = "Habits and events can \n be grouped by meaning";
 deleteWarning = "Are you sure you want to delete the tracker?";
 notFound = "No results found";
+statisticsDefaultInfo = "There is nothing to analyze yet";
 
 // MARK: - Buttons state
 cancelButton = "Cancel";

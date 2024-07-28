@@ -41,7 +41,7 @@ class TrackersViewController: UIViewController {
     private let searchBarCancelButton = UIButton()
     private let addButton = UIButton()
     private let datePickerLabel = UILabel()
-    
+
     private lazy var filterButton: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("filterButton", comment: ""), for: .normal)
@@ -548,8 +548,10 @@ extension TrackersViewController: UICollectionViewDelegate {
                         
                         UIAction(title: NSLocalizedString("edit", comment: "")) { [weak self] _ in
                             guard let self = self else { return }
+                            let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+                            let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
                             analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
-                            showEditTrackerFlow(for: visibleCategories[indexPath.section].trackers[indexPath.row], with: visibleCategories[indexPath.section].name)
+                            showEditTrackerFlow(for: tracker, with: visibleCategories[indexPath.section].name, completedDays: completedDays)
                         },
                         
                         UIAction(title: NSLocalizedString("delete", comment: ""), attributes: .destructive) { [weak self] _ in
@@ -574,7 +576,7 @@ extension TrackersViewController: UICollectionViewDelegate {
         return contextMenu
     }
     
-    private func showEditTrackerFlow(for tracker: Tracker, with category: String) {
+    private func showEditTrackerFlow(for tracker: Tracker, with category: String, completedDays: Int) {
         var trackerType = TypeOfEvent.habbit
         
         if !tracker.schedule.isEmpty {
@@ -587,6 +589,7 @@ extension TrackersViewController: UICollectionViewDelegate {
         eventsController.editingTracker = tracker
         eventsController.trackersVCDelegate = self
         eventsController.editingTrackerCategory = category
+        eventsController.editingTrackerDaysCount = completedDays
         present(UINavigationController(rootViewController: eventsController), animated: true, completion: nil)
     }
 }

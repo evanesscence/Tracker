@@ -31,6 +31,12 @@ irregularEvent = "Нерегулярное событие";
 // MARK: - Tracker states
 pinnedTracker = "Закрепленные";
 
+// MARK: - Statistics states
+bestPeriod = "Лучший период";
+perfectDays = "Идеальные дни";
+trackersCompleted = "Трекеров завершено";
+averageValue = "Среднее значение";
+
 // MARK: - Filters
 filterButton = "Фильтры";
 allTrackers = "Все трекеры";
@@ -59,6 +65,7 @@ eventsGrouped = "Привычки и события можно \n объедин
 emptyState = "Что будем отслеживать?";
 deleteWarning = "Уверены, что хотите удалить трекер?";
 notFound = "Ничего не найдено";
+statisticsDefaultInfo = "Анализировать пока нечего";
 
 // MARK: - Buttons state
 cancelButton = "Отмена";
