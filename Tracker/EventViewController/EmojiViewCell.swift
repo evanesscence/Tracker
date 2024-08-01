@@ -21,6 +21,7 @@ class EmojiViewCell: UICollectionViewCell {
         ])
     }
     
+    
     private func setupSelectedCell() {
         backgroundColor = UIColor.tLightGray1
         layer.cornerRadius = 11
@@ -28,10 +29,14 @@ class EmojiViewCell: UICollectionViewCell {
     }
     
     private func setupDeselectedCell() {
-        backgroundColor = .white
+        backgroundColor = .none
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        emoji.text = nil
     }
 }

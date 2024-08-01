@@ -2,7 +2,7 @@ import UIKit
 
 protocol EventsControllerProtocol: AnyObject {
     func didConfirm(with days: [DaysOfWeek])
-    func didConfirm(with category: TrackerCategory)
+    func didConfirm(with category: String)
 }
 
 enum TypeOfEvent {
@@ -10,17 +10,35 @@ enum TypeOfEvent {
     case irregularEvent
 }
 
+enum ActionWithTracker {
+    case edit
+}
+
 enum Properties: String, CaseIterable {
-    case category = "Категория"
-    case sсhedule = "Расписание"
+    case category
+    case sсhedule
 }
 
 class EventsController: UIViewController {
-    var collectionElements = [CollectionElements]()
+    private let trackersDaysCount: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .tBlack
+        
+        return label
+    }()
     
+    var collectionElements = [CollectionElements]()
     var type: TypeOfEvent
-    init(type: TypeOfEvent) {
+    var action: ActionWithTracker?
+    var editingTracker: Tracker?
+    var editingTrackerCategory: String?
+    var editingTrackerDaysCount: Int?
+    
+    init(type: TypeOfEvent, action: ActionWithTracker?) {
         self.type = type
+        self.action = action
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -29,6 +47,7 @@ class EventsController: UIViewController {
     }
     
     weak var delegate: NewTrackerViewControllerDelegate?
+    weak var trackersVCDelegate: TrackersViewControllerDelegate?
     
     private var properties = [String]()
     private var selectedDays: String?
@@ -82,7 +101,7 @@ class EventsController: UIViewController {
         setupToHideKeyboardOnTapOnView()
         trackerLabelTextField.delegate = self
         
-        view.backgroundColor = .white
+        view.backgroundColor = .tWhite
         setupEventData()
         
         trackerLabelTextFieldConfig()
@@ -90,6 +109,54 @@ class EventsController: UIViewController {
         setupButtons()
         collectionViewConfig()
         
+        
+        setupEditFlow()
+    }
+    
+    func setupEditFlow() {
+        guard let tracker = editingTracker, let category = editingTrackerCategory, let editingTrackerDaysCount = editingTrackerDaysCount else { return }
+        title = self.type == .habbit ? NSLocalizedString("editHabit", comment: "") : NSLocalizedString("editIrregularEvent", comment: "")
+        setupTrackersDaysCount(editingTrackerDaysCount)
+        
+        trackerLabelTextField.text = tracker.name
+        selectedCategory = category == NSLocalizedString("pinnedTracker", comment: "") ? TrackerStore().getPinnedTrackerCategoryName(with: tracker.id) : category
+
+        setupSelectedDays(with: tracker.schedule)
+        schedule = tracker.schedule
+        
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color.toHexString()
+        
+        didSelectedCategory = true
+        didSelectedDays = true
+        didSelectedEmoji = true
+        didSelectedColor = true
+        
+        action = .edit
+        
+        createButton.setTitle(NSLocalizedString("save", comment: ""), for: .normal)
+        createButtonIsEnabled()
+    }
+    
+    private func setupTrackersDaysCount(_ completedDays: Int) {
+        view.addSubview(trackersDaysCount)
+        trackersDaysCount.text = wordDay(for: completedDays)
+        trackersDaysCount.textAlignment = .center
+        
+        NSLayoutConstraint.activate([
+            trackersDaysCount.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            trackersDaysCount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            trackersDaysCount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+        ])
+    }
+    
+    private func wordDay(for number: Int) -> String {
+        let dayString = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: ""),
+            number
+        )
+        
+        return dayString
     }
     
     private func setupScrollAndContentViews() {
@@ -107,18 +174,20 @@ class EventsController: UIViewController {
         ])
         
         contentView.frame.size = CGSize(width: view.frame.width, height: view.frame.height)
+        contentView.backgroundColor = .tWhite
+        scrollView.backgroundColor = .tWhite
         scrollView.addSubview(contentView)
     }
     
     private func setupEventData() {
         switch type {
         case .habbit:
-            title = "Новая привычка"
-            properties = ["Категория", "Расписание"]
+            title = NSLocalizedString("newHabbit", comment: "")
+            properties = [NSLocalizedString("category", comment: ""), NSLocalizedString("schedule", comment: "")]
             break
         case .irregularEvent:
-            title = "Новое нерегулярное событие"
-            properties = ["Категория"]
+            title = NSLocalizedString("newIrregularEvent", comment: "")
+            properties = [NSLocalizedString("category", comment: "")]
             break
         }
     }
@@ -131,7 +200,9 @@ class EventsController: UIViewController {
         trackerTextFieldContainer.alignment = .fill
         trackerTextFieldContainer.distribution = .fill
         
-        trackerTextFieldContainer.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+        let top = action == .edit ? 86 : 0.0
+        
+        trackerTextFieldContainer.layoutMargins = UIEdgeInsets(top: top, left: 0, bottom: 8, right: 0)
         trackerTextFieldContainer.isLayoutMarginsRelativeArrangement = true
         
         trackerTextFieldContainer.addArrangedSubview(trackerLabelTextField)
@@ -143,19 +214,17 @@ class EventsController: UIViewController {
         
         trackerLabelTextField.backgroundColor = .tLightGray30
         trackerLabelTextField.layer.cornerRadius = 16
-        trackerLabelTextField.placeholder = "Введите название трекера"
+        trackerLabelTextField.placeholder = NSLocalizedString("enterTrackerTitle", comment: "")
         trackerLabelTextField.clearButtonMode = .whileEditing
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        
         trackerLabelTextField.addTarget(self, action: #selector(trackerLabelTextFieldEditingChanged(_:)), for: .editingChanged)
         
         hintOfTextField.isHidden = true
         hintOfTextField.textAlignment = .center
-        hintOfTextField.text = "Ограничение 38 символов"
+        hintOfTextField.text = NSLocalizedString("characterLimit", comment: "")
         hintOfTextField.textColor = .tRed
         hintOfTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        
         
         NSLayoutConstraint.activate([
             trackerTextFieldContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
@@ -184,7 +253,7 @@ class EventsController: UIViewController {
         eventPropertiesTable.delegate = self
         eventPropertiesTable.dataSource = self
     }
- //
+    
     private func collectionViewConfig() {
         collectionView.allowsMultipleSelection = true
         contentView.addSubview(collectionView)
@@ -208,7 +277,7 @@ class EventsController: UIViewController {
     
         buttonsContainer.distribution = .fillEqually
         
-        cancelButton.setTitle("Отмена", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("cancelButton", comment: ""), for: .normal)
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         cancelButton.backgroundColor = .tWhite
         cancelButton.setTitleColor(.tRed, for: .normal)
@@ -217,7 +286,7 @@ class EventsController: UIViewController {
         cancelButton.layer.cornerRadius = 16
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
        
-        createButton.setTitle("Создать", for: .normal)
+        createButton.setTitle(NSLocalizedString("createButton", comment: ""), for: .normal)
         createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createButton.isEnabled = false
         createButton.backgroundColor = .tTextFieldLabel
@@ -239,21 +308,22 @@ class EventsController: UIViewController {
             buttonsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             buttonsContainer.heightAnchor.constraint(equalToConstant: 60)
         ])
-        
-       
     }
     
     private func setViewController(for property: String) -> UIViewController {
         var vc = UIViewController()
-        if property == Properties.category.rawValue {
-            let categoriesController = CategoriesController()
+        if property == NSLocalizedString("category", comment: "") {
+            let categoriesController = CategoriesController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
             categoriesController.delegate = self
             vc = categoriesController
+            
+            UserDefaults.standard.setValue(selectedCategory, forKey: "selectedCategory")
         }
         
-        if property == Properties.sсhedule.rawValue {
+        if property == NSLocalizedString("schedule", comment: "") {
             let scheduleController = ScheduleController()
             scheduleController.delegate = self
+            scheduleController.editingDays = schedule
             vc = scheduleController
         }
         return vc
@@ -275,7 +345,6 @@ class EventsController: UIViewController {
             createButton.isEnabled = false
             createButton.backgroundColor = .tTextFieldLabel
         }
-        
     }
     
     private func setupToHideKeyboardOnTapOnView() {
@@ -295,13 +364,25 @@ class EventsController: UIViewController {
             emoji: selectedEmoji,
             schedule: schedule)
         
-        let newHabbit = TrackerCategory(
-            name: selectedCategory,
-            trackers: [newTracker]
-        )
-        
         try? trackerStore?.add(tracker: newTracker, with: selectedCategory)
-        delegate?.createdNewTracker(tracker: newHabbit)
+        delegate?.reloadTrackers()
+    }
+    
+    private func editTracker() {
+        guard let editingTracker = editingTracker, let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedColor = selectedColor, let selectedDays = schedule, let selectedEmoji = selectedEmoji else {
+            return
+        }
+        
+        let newTracker = Tracker(
+            id: editingTracker.id,
+            name: trackerName,
+            color: UIColor(hexString: selectedColor),
+            emoji: selectedEmoji,
+            schedule: selectedDays)
+        
+        
+        try? trackerStore?.edit(tracker: newTracker, with: selectedCategory)
+        trackersVCDelegate?.reloadTrackers()
     }
     
     @objc func dismissKeyboard() {
@@ -316,21 +397,36 @@ class EventsController: UIViewController {
     
     @objc
     private func cancelButtonTapped() {
+        if let _ = editingTracker {
+            self.dismiss(animated: true)
+        }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
     
     @objc
     private func createButtonTapped() {
         if type == .habbit {
-            
+
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let schedule = schedule, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             
-            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: schedule, selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            if let _ = editingTracker  {
+                editTracker()
+            } else {
+                createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: schedule, selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            }
             
         } else {
             guard let selectedCategory = selectedCategory, let trackerName = trackerLabelTextField.text, let selectedEmoji = selectedEmoji, let selectedColor = selectedColor else { return }
             
-            createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: [], selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            if let _ = editingTracker  {
+                editTracker()
+            } else {
+                createTracker(selectedCategory: selectedCategory, trackerName: trackerName, schedule: [], selectedEmoji: selectedEmoji, selectedColor: selectedColor)
+            }
+        }
+        
+        if let _ = editingTracker {
+            self.dismiss(animated: true)
         }
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
@@ -418,6 +514,8 @@ extension EventsController: UICollectionViewDelegateFlowLayout {
 
 extension EventsController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        collectionView.reloadItems(at: [indexPath])
+        
         let section = collectionElements[indexPath.section]
         if section.elementsName == "Emoji" {
             selectedEmoji = section.elements[indexPath.row]
@@ -472,6 +570,11 @@ extension EventsController: UICollectionViewDataSource {
                 cell.emoji.text = collectionElements[indexPath.section].elements[indexPath.row]
                 cell.emoji.font = UIFont.systemFont(ofSize: 32)
                 
+                guard let editingTracker = editingTracker else { return cell }
+                if collectionElements[indexPath.section].elements[indexPath.row] == editingTracker.emoji {
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                }
+
                 reusedCell = cell
             }
         } else {
@@ -480,6 +583,12 @@ extension EventsController: UICollectionViewDataSource {
                 let cellColor = collectionElements[indexPath.section].elements[indexPath.row]
                 cell.configCell(with: cellColor)
                 
+                guard let editingTracker = editingTracker else { return cell }
+                if collectionElements[indexPath.section].elements[indexPath.row] == editingTracker.color.toHexString().uppercased() {
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                }
+                
+
                 reusedCell = cell
             }
         }
@@ -490,8 +599,8 @@ extension EventsController: UICollectionViewDataSource {
 }
 
 extension EventsController: EventsControllerProtocol {
-    func didConfirm(with category: TrackerCategory) {
-        selectedCategory = category.name
+    func didConfirm(with category: String) {
+        selectedCategory = category
         
         didSelectedCategory = true
         createButtonIsEnabled()
@@ -499,17 +608,20 @@ extension EventsController: EventsControllerProtocol {
     }
     
     func didConfirm(with days: [DaysOfWeek]) {
+        setupSelectedDays(with: days)
+        schedule = days
+        didSelectedDays = !days.isEmpty
+        createButtonIsEnabled()
+        eventPropertiesTable.reloadData()
+    }
+    
+    private func setupSelectedDays(with days: [DaysOfWeek]) {
         if days.count == 7 {
-            selectedDays = "Каждый день"
+            selectedDays = NSLocalizedString("everyDay", comment: "")
             
         } else {
             selectedDays = days.map { $0.day.shortFormat()}.joined(separator: ", ")
         }
-        
-        schedule = days
-        didSelectedDays = true
-        createButtonIsEnabled()
-        eventPropertiesTable.reloadData()
     }
 }
 

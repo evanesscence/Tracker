@@ -71,12 +71,11 @@ class TrackerPropertiesCell: UITableViewCell {
     }
     
     func configCell(for cell: TrackerPropertiesModel) {
-        if cell.title == Properties.sсhedule.rawValue {
+        if cell.title == NSLocalizedString("schedule", comment: "") {
             chosenPropertiesLabel.text = cell.selectedDays
         } else {
             chosenPropertiesLabel.text = cell.selectedCategory
         }
-       
       
         propertiesLabel.text = cell.title
         chosenPropertiesLabel.textColor = .tTextFieldLabel

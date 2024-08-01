@@ -18,8 +18,8 @@ class UICollectionElements {
         ]),
         
         CollectionElements(
-            elementsName: "Цвет",
-            elements: 
+            elementsName: NSLocalizedString("bgColorSection", comment: ""),
+            elements:
                 ["#FD4C49", "#FF881E", "#007BFA",
                  "#6E44FE", "#33CF69", "#E66DD4",
                  "#F9D4D4", "#34A7FE", "#46E69D",

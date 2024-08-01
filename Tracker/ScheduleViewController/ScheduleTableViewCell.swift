@@ -5,7 +5,7 @@ final class ScheduleTableViewCell: UITableViewCell {
     static let reuseIdentifier = "ScheduleTableViewCell"
     private var dayModel: DaysOfWeek?
     private var dayLabel = UILabel()
-    private var switchButton = UISwitch()
+    var switchButton = UISwitch()
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

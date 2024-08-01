@@ -3,6 +3,7 @@ import CoreData
 
 protocol TrackerStoreProtocol: AnyObject {
     func add(tracker: Tracker, with category: String) throws
+    func edit(tracker: Tracker, with category: String) throws
 }
 
 private enum TrackerStoreError: Error {
@@ -41,6 +42,53 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         return controller
     }()
     
+ 
+    public func getPinnedTrackerCategoryName(with trackerID: UUID) -> String? {
+        let tracker = try? idsFetch(id: trackerID)
+        return isPinnedTracker(with: trackerID) ? tracker?.categoryName : nil
+    }
+    
+    public func isPinnedTracker(with trackerID: UUID) -> Bool {
+        let tracker = try? idsFetch(id: trackerID)
+        
+        if let pinned = tracker?.isPinned {
+            return pinned
+        }
+        
+        return false
+    }
+    
+    public func pinnedTracker(with trackerID: UUID) {
+        let pinnedTrackerName = NSLocalizedString("pinnedTracker", comment: "")
+        let tracker = try? idsFetch(id: trackerID)
+        
+        tracker?.categoryName = tracker?.category?.name
+        tracker?.isPinned = true
+        
+        if let pinned = try? TrackerCategoryStore().fetchCategoryByName(pinnedTrackerName) {
+            tracker?.category = pinned
+        } else {
+            try? TrackerCategoryStore().addNewCategory(TrackerCategory(name: pinnedTrackerName, trackers: []))
+            if let pinned = try? TrackerCategoryStore().fetchCategoryByName(pinnedTrackerName) {
+                tracker?.category = pinned
+            }
+        }
+        
+        try? context.save()
+    }
+    
+    public func unpinnedTracker(with trackerID: UUID) {
+        let tracker = try? idsFetch(id: trackerID)
+        tracker?.isPinned = false
+        
+        if let categoryName = tracker?.categoryName {
+            let lastCategoryName = try? TrackerCategoryStore().fetchCategoryByName(categoryName)
+            tracker?.category = lastCategoryName
+        }
+        
+        try? context.save()
+    }
+    
     public func add(tracker: Tracker, with category: String) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         
@@ -57,6 +105,35 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         }
         
         try context.save()
+    }
+    
+    public func edit(tracker: Tracker, with category: String) throws {
+        let trackerCoreData = try? idsFetch(id: tracker.id)
+  
+        trackerCoreData?.name = tracker.name
+        trackerCoreData?.emoji = tracker.emoji
+        trackerCoreData?.color = tracker.color.toHexString()
+        trackerCoreData?.schedule = convertToInt(schedule: tracker.schedule)
+        
+        if isPinnedTracker(with: tracker.id) {
+            trackerCoreData?.category?.name = NSLocalizedString("pinnedTracker", comment: "")
+            trackerCoreData?.categoryName = category
+        } else {
+            if let trackerCategoryCoreData = try TrackerCategoryStore().fetchCategoryByName(category) {
+                trackerCoreData?.category = trackerCategoryCoreData
+            } else {
+                throw TrackerStoreError.decodingErrorInvalidTracker
+            }
+        }
+        
+        try context.save()
+    }
+    
+    public func delete(tracker: Tracker) {
+        guard let trackerCoreData = try? idsFetch(id: tracker.id) else { return }
+        context.delete(trackerCoreData)
+        
+        try? context.save()
     }
     
     public func fetchTracker(by id: UUID) throws -> Tracker? {

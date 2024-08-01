@@ -34,6 +34,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
         layer.borderWidth = 0
         layer.borderColor = .none
     }
+    
     private func setupColorView() {
         colorView.frame.size = CGSize(width: 40, height: 40)
         colorView.layer.cornerRadius = 8
@@ -52,5 +53,10 @@ final class ColorCollectionViewCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        colorView.backgroundColor = nil
+        label.text = nil
     }
 }

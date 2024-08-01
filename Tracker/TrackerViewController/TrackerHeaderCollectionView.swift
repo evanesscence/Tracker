@@ -6,7 +6,6 @@ final class TrackerHeaderCollectionView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        categoryName.text = "Радостные мелочи"
         categoryName.textColor = .tBlack
         categoryName.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         addSubview(categoryName)

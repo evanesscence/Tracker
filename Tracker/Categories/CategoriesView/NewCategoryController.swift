@@ -1,18 +1,30 @@
 import UIKit
 
 final class NewCategoryController: UIViewController {
-    weak var delegate: CategoriesControllerProtocol?
+    var isCategoryEditing = false
+    var changedCategory: String?
+    
     private var newCategory: String?
     private let trackerLabelTextField = TextField()
-    private let confirmButton = DarkButton(title: "Готово")
+    private let confirmButton = DarkButton(title: NSLocalizedString("doneButton", comment: ""))
+    private let viewModel: CategoriesViewModel
     
     private lazy var dataProvider: TrackerCategoryStoreProtocol? = {
         let trackerCategoryStore = TrackerCategoryStore.shared
         return trackerCategoryStore
     }()
     
+    init(viewModel: CategoriesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
-        navigationItem.title = "Новая категория"
+        navigationItem.title = isCategoryEditing ? NSLocalizedString("editCategory", comment: "") : NSLocalizedString("newCategory", comment: "")
         view.backgroundColor = .white
         
         setupConfirmButton()
@@ -40,7 +52,7 @@ final class NewCategoryController: UIViewController {
         trackerLabelTextField.translatesAutoresizingMaskIntoConstraints = false
         trackerLabelTextField.backgroundColor = .tLightGray30
         trackerLabelTextField.layer.cornerRadius = 16
-        trackerLabelTextField.placeholder = "Введите название категории"
+        trackerLabelTextField.placeholder = NSLocalizedString("enterCategoryTitle", comment: "")
         trackerLabelTextField.textColor = .tBlack
         trackerLabelTextField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         trackerLabelTextField.clearButtonMode = .whileEditing
@@ -84,8 +96,11 @@ final class NewCategoryController: UIViewController {
     @objc
     private func confirmButtonTapped() {
         if let newCategory = newCategory {
-            try? dataProvider?.addNewCategory(TrackerCategory(name: newCategory, trackers: []))
-            delegate?.newCategoryWasAdded(with: newCategory)
+            if let changedCategory = changedCategory {
+                viewModel.editCategory(oldCategoryName: changedCategory, newCategoryName: newCategory)
+            } else {
+                viewModel.addNewCategory(category: TrackerCategory(name: newCategory, trackers: []))
+            }
         }
         
         dismiss(animated: true)
@@ -96,6 +111,5 @@ final class NewCategoryController: UIViewController {
         newCategory = textField.text
         confirmButtonIsEnabled()
     }
-
 }
 

@@ -1,0 +1,100 @@
+// MARK: - General
+trackers = "Trackers";
+statistic = "Statistics";
+
+// MARK: - Onboarding
+onboardingFirstPage = "Track only what you want";
+onboardingSecondPage = "Even if it's not liters of water and yoga";
+onboardingButton = "That's technology!";
+
+// MARK: - Basic operations
+search = "Search";
+cancel = "Cancel";
+pin = "Pin";
+unpin = "Unpin";
+delete = "Delete";
+edit = "Edit";
+save = "Save";
+ok = "Oк";
+
+// MARK: - Schedule
+todayOnly = "Today only";
+dayEndsWithOne = "day";
+dayEndsWith234 = "days";
+days = "days";
+everyDay = "Every day";
+
+// MARK: - Tracker creation
+createTracker = "Create Tracker";
+habbit = "Habit";
+irregularEvent = "Irregular Event";
+
+// MARK: - Tracker states
+pinnedTracker = "Pinned";
+
+// MARK: - Statistics states
+bestPeriod = "Best Period";
+perfectDays = "Perfect Days";
+trackersCompleted = "Trackers Completed";
+averageValue = "Average Value";
+
+// MARK: - Filters
+filterButton = "Filters";
+allTrackers = "All trackers";
+todayTrackers = "Today's trackers";
+completedTrackers = "Completed trackers";
+uncompletedTrackers = "Uncompleted trackers";
+
+// MARK: - Events
+category = "Category";
+schedule = "Schedule";
+newHabbit = "New Habit";
+newIrregularEvent = "New Irregular Event";
+editHabit = "Habit Editing";
+editIrregularEvent = "Event Editing";
+
+// MARK: - Category creation
+newCategory = "New Category";
+editCategory = "Category Editing";
+
+// MARK: - Placeholders
+enterTrackerTitle = "Enter Tracker Title";
+enterCategoryTitle = "Enter Category Title";
+
+// MARK: - Tips
+characterLimit = "Character limit of 38";
+emptyState = "What will we track?";
+eventsGrouped = "Habits and events can \n be grouped by meaning";
+deleteWarning = "Are you sure you want to delete the tracker?";
+deleteCategoryWarning = "Are you sure you want to delete the category?";
+notFound = "No results found";
+statisticsDefaultInfo = "There is nothing to analyze yet";
+deleteCategoryAlertTitle = "Failed to delete category";
+deleteCategoryAlertMessage = "The category contains trackers. Please delete the trackers associated with the selected category and try again.";
+
+
+// MARK: - Buttons state
+cancelButton = "Cancel";
+createButton = "Create";
+addCategoryButton = "Add Category";
+doneButton = "Done";
+
+// MARK: - Sections
+bgColorSection = "Color";
+
+// MARK: - WeekDays
+sunday = "Sunday";
+monday = "Monday";
+tuesday = "Tuesday";
+wednesday = "Wednesday";
+thursday = "Thursday";
+friday = "Friday";
+saturday = "Saturday";
+
+sun = "Sun";
+mon = "Mon";
+tue = "Tue";
+wed = "Wed";
+thu = "Thu";
+fri = "Fri";
+sat = "Sat";

@@ -7,19 +7,19 @@ protocol TrackerCollectionViewCellProtocol: AnyObject {
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let reusedIdentifier = "TrackerCollectionViewCell"
-    
+
     weak var delegate: TrackerCollectionViewCellProtocol?
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
     private var indexPath: IndexPath?
     
-    var background = UIView()
-    var emoji = UILabel()
-    var emojiView = UIView()
-    var eventInfo = UILabel()
-
-    var daysCount = UILabel()
-    var completeButton = UIButton()
+    private var background = UIView()
+    private var emoji = UILabel()
+    private var emojiView = UIView()
+    private var eventInfo = UILabel()
+    private var daysCount = UILabel()
+    private var completeButton = UIButton()
+    private var pin = UIImageView()
     
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
@@ -28,6 +28,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }()
     
     private let doneImage = UIImage(named: "DoneButton")
+    private let analyticsService = AnalyticsService()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,16 +39,16 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         background.addSubview(emojiView)
         background.addSubview(eventInfo)
+        background.addSubview(pin)
         emojiView.addSubview(emoji)
     
-        
-        
         emoji.translatesAutoresizingMaskIntoConstraints = false
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         background.translatesAutoresizingMaskIntoConstraints = false
         eventInfo.translatesAutoresizingMaskIntoConstraints = false
         daysCount.translatesAutoresizingMaskIntoConstraints = false
         completeButton.translatesAutoresizingMaskIntoConstraints = false
+        pin.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             background.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -75,8 +76,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             emoji.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
         ])
         
-       
-        
         NSLayoutConstraint.activate([
             completeButton.heightAnchor.constraint(equalToConstant: 34),
             completeButton.widthAnchor.constraint(equalToConstant: 34),
@@ -90,6 +89,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
            
         ])
         
+        NSLayoutConstraint.activate([
+            pin.topAnchor.constraint(equalTo: background.topAnchor, constant: 12),
+            pin.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -4),
+            pin.heightAnchor.constraint(equalToConstant: 24),
+            pin.widthAnchor.constraint(equalToConstant: 24)
+         
+        ])
+        
         background.backgroundColor = .purple
         background.layer.cornerRadius = 16
         background.layer.masksToBounds = true
@@ -99,18 +106,54 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         emojiView.layer.cornerRadius = emojiView.frame.size.width / 2
         emojiView.layer.masksToBounds = true
         
-        emoji.text = "🌺"
         emoji.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
-        eventInfo.text = "Бабушка прислала открытку в вотсапе"
         eventInfo.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        eventInfo.textColor = .tWhite
+        eventInfo.textColor = .white
         eventInfo.numberOfLines = 2
        
         daysCount.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         daysCount.textColor = .tBlack
     
         setupCompleteButton()
+    }
+    
+    func pinTracker() {
+        guard let trackerID = trackerId else { return }
+        TrackerStore().pinnedTracker(with: trackerID)
+    }
+    
+    func unpinTracker() {
+        guard let trackerID = trackerId else { return }
+        TrackerStore().unpinnedTracker(with: trackerID)
+    }
+    
+    func setupPinnedTracker() {
+        pin.image = UIImage(named: "Pin")
+    }
+    
+    func setupUnpinnedTracker() {
+        pin.image = .none
+    }
+    
+    func isPinned() -> Bool {
+        guard let trackerID = trackerId else { return false }
+        return TrackerStore().isPinnedTracker(with: trackerID)
+    }
+    
+    func getColor() -> UIColor {
+        guard let color = background.backgroundColor else { return .white }
+        return color
+    }
+    
+    func getEmoji() -> String {
+        guard let text = emoji.text else { return "" }
+        return text
+    }
+    
+    func getEventInfo() -> String {
+        guard let eventInfo = eventInfo.text else { return "" }
+        return eventInfo
     }
     
     func configTracker(for cell: Tracker, isCompletedToday: Bool, completedDays: Int, at indexPath: IndexPath, isTomorrow: Bool) {
@@ -126,16 +169,17 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         if !cell.schedule.isEmpty {
             daysCount.text = wordDay(for: completedDays)
         } else {
-            daysCount.text = "Только сегодня"
+            daysCount.text = NSLocalizedString("todayOnly", comment: "")
         }
-        
-        
+    
         let image = isCompletedToday ? doneImage : plusImage
-        let opacity = isCompletedToday || !isTomorrow ? 0.3 : 1
+        let opacity = isCompletedToday || isTomorrow ? 0.3 : 1
         
         completeButton.layer.opacity = Float(opacity)
         completeButton.setImage(image, for: .normal)
-        completeButton.isEnabled = isTomorrow
+        completeButton.isEnabled = !isTomorrow
+        
+        isPinned() ? setupPinnedTracker() : setupUnpinnedTracker()
     }
     
     func setupCompleteButton() {
@@ -149,25 +193,17 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func wordDay(for number: Int) -> String {
-        var word = "\(number) "
-        switch number {
-        case 1, 21, 31:
-            word += "день"
-            break
-        case 2, 3, 4, 22, 23, 24:
-            word += "дня"
-            break
-        default:
-            word += "дней"
-            break
-        }
-        
-        return word
+        let dayString = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: ""),
+            number
+        )
+        return dayString
     }
     
     @objc
     private func completeButtonTapped() {
         guard let trackerId = trackerId, let indexPath = indexPath else { return }
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
         isCompletedToday ? delegate?.uncompleteTracker(id: trackerId, at: indexPath) : delegate?.completeTracker(id: trackerId, at: indexPath)
     }
     

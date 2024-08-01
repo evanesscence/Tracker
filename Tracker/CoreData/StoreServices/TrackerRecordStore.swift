@@ -73,7 +73,7 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
             }
         }
     }
-    
+        
     private func convertToTrackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let date = trackerRecordCoreData.date else {
             preconditionFailure("err")

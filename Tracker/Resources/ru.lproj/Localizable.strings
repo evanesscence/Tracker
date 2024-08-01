@@ -1,0 +1,100 @@
+// MARK: - General
+trackers = "Трекеры";
+statistic = "Статистика";
+
+// MARK: - Onboarding
+onboardingFirstPage = "Отслеживайте только то, что хотите";
+onboardingSecondPage = "Даже если это не литры воды и йога";
+onboardingButton = "Вот это технологии!";
+
+// MARK: - Basic operations
+search = "Поиск";
+cancel = "Отменить";
+pin = "Закрепить";
+unpin = "Открепить";
+delete = "Удалить";
+edit = "Редактировать";
+save = "Сохранить";
+ok = "Oк";
+
+// MARK: - Schedule
+todayOnly = "Только сегодня";
+dayEndsWithOne = "день";
+dayEndsWith234 = "дня";
+days = "дней";
+everyDay = "Каждый день";
+
+// MARK: - Tracker creation
+createTracker = "Создание трекера";
+habbit = "Привычка";
+irregularEvent = "Нерегулярное событие";
+
+// MARK: - Tracker states
+pinnedTracker = "Закрепленные";
+
+// MARK: - Statistics states
+bestPeriod = "Лучший период";
+perfectDays = "Идеальные дни";
+trackersCompleted = "Трекеров завершено";
+averageValue = "Среднее значение";
+
+// MARK: - Filters
+filterButton = "Фильтры";
+allTrackers = "Все трекеры";
+todayTrackers = "Трекеры на сегодня";
+completedTrackers = "Завершенные";
+uncompletedTrackers = "Незавершенные";
+
+// MARK: - Events
+category = "Категория";
+schedule = "Расписание";
+newHabbit = "Новая привычка";
+newIrregularEvent = "Новое нерегулярное событие";
+editHabit = "Редактирование привычки";
+editIrregularEvent = "Редактирование события";
+
+// MARK: - Category creation
+newCategory = "Новая категория";
+editCategory = "Редактирование категории";
+
+// MARK: - Placeholders
+enterTrackerTitle = "Введите название трекера";
+enterCategoryTitle = "Введите название категории";
+
+// MARK: - Tips
+characterLimit = "Ограничение 38 символов";
+eventsGrouped = "Привычки и события можно \n объединить по смыслу";
+emptyState = "Что будем отслеживать?";
+deleteWarning = "Уверены, что хотите удалить трекер?";
+deleteCategoryWarning = "Уверены, что хотите удалить трекер?";
+notFound = "Ничего не найдено";
+statisticsDefaultInfo = "Анализировать пока нечего";
+deleteCategoryAlertTitle = "Не удалось удалить категорию";
+deleteCategoryAlertMessage = "Категория содержит трекеры. Удалите трекеры с выбранной категорией и повторите попытку";
+
+// MARK: - Buttons state
+cancelButton = "Отмена";
+createButton = "Создать";
+addCategoryButton = "Добавить категорию";
+doneButton = "Готово";
+
+// MARK: - Sections
+bgColorSection = "Цвет";
+
+// MARK: - WeekDays
+sunday = "Воскресенье";
+monday = "Понедельник";
+tuesday = "Вторник";
+wednesday = "Среда";
+thursday = "Четверг";
+friday = "Пятница";
+saturday = "Суббота";
+
+sun = "Вс";
+mon = "Пн";
+tue = "Вт";
+wed = "Ср";
+thu = "Чт";
+fri = "Пт";
+sat = "Сб";
+
