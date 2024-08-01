@@ -11,7 +11,21 @@ class TrackersViewController: UIViewController {
     
     private var completedTrackers: [TrackerRecord] = []
     private var categories: [TrackerCategory] = []
-    private var visibleCategories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategory] = [] {
+        didSet {
+            if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("allTrackers", comment: "") {
+                filterButton.isHidden = visibleCategories.isEmpty
+            }
+            
+            if Date() >= datePicker.date {
+                isTomorrow = false
+            } else if Date() < datePicker.date {
+                isTomorrow = true
+            } else {
+                isTomorrow = false
+            }
+        }
+    }
     private var isTomorrow = false
     
     private lazy var searchBar: UISearchTextField = {
@@ -277,7 +291,7 @@ class TrackersViewController: UIViewController {
     
     private func setupTrackerCollectionView() {
         trackerCollectionView.backgroundColor = .tWhite
-        trackerCollectionView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        trackerCollectionView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 48, right: 0)
         trackerCollectionView.showsVerticalScrollIndicator = false
         view.addSubview(trackerCollectionView)
         trackerCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -340,7 +354,7 @@ class TrackersViewController: UIViewController {
                 trackers: trackers
             )
         }
-        
+    
         setFilter()
         visibleCategories.sort { $0.name == NSLocalizedString("pinnedTracker", comment: "") && $1.name != NSLocalizedString("pinnedTracker", comment: "") }
         trackerCollectionView.reloadData()
@@ -349,18 +363,9 @@ class TrackersViewController: UIViewController {
     
     private func showPlaceholder() {
         trackerCollectionView.isHidden = visibleCategories.isEmpty
-        filterButton.isHidden = visibleCategories.isEmpty
     }
     
     @objc func datePickerValueChanged() {
-        if Date() >= datePicker.date {
-            isTomorrow = false
-        } else if Date() < datePicker.date {
-            isTomorrow = true
-        } else {
-            isTomorrow = false
-        }
-        
         if UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("completedTrackers", comment: "") || UserDefaults.standard.object(forKey: "selectedFilter") as? String == NSLocalizedString("uncompletedTrackers", comment: "") {
             showCompletedTrackers()
         } else {
@@ -456,16 +461,6 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if (indexPath.section > 0 && indexPath.section == visibleCategories.count - 1) && indexPath.row == visibleCategories[indexPath.section].trackers.count - 1 {
-            filterButton.isHidden = true
-        }
-        else {
-            filterButton.isHidden = false
-        }
-    }
-
     
     private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in

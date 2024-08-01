@@ -94,7 +94,6 @@ class EventsController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserDefaults.standard.removeObject(forKey: "selectedCategory")
         
         collectionElements = UICollectionElements.shared.elements
         
@@ -317,11 +316,14 @@ class EventsController: UIViewController {
             let categoriesController = CategoriesController(viewModel: CategoriesViewModel(categoryStore: TrackerCategoryStore()))
             categoriesController.delegate = self
             vc = categoriesController
+            
+            UserDefaults.standard.setValue(selectedCategory, forKey: "selectedCategory")
         }
         
         if property == NSLocalizedString("schedule", comment: "") {
             let scheduleController = ScheduleController()
             scheduleController.delegate = self
+            scheduleController.editingDays = schedule
             vc = scheduleController
         }
         return vc
@@ -608,7 +610,7 @@ extension EventsController: EventsControllerProtocol {
     func didConfirm(with days: [DaysOfWeek]) {
         setupSelectedDays(with: days)
         schedule = days
-        didSelectedDays = true
+        didSelectedDays = !days.isEmpty
         createButtonIsEnabled()
         eventPropertiesTable.reloadData()
     }

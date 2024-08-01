@@ -5,9 +5,9 @@ protocol ScheduleControllerProtocol: AnyObject {
 }
 
 class ScheduleController: UIViewController {
-    
     private var selectedDays: [DaysOfWeek] = []
     weak var delegate: EventsControllerProtocol?
+    var editingDays: [DaysOfWeek]?
     
     private let scheduleTableView = {
         let tableView = UITableView()
@@ -24,9 +24,9 @@ class ScheduleController: UIViewController {
         title = NSLocalizedString("schedule", comment: "")
         view.backgroundColor = .tWhite
         
-        
         setupConfirmButton()
         setupScheduleTableView()
+        
     }
     
     private func setupScheduleTableView() {
@@ -76,6 +76,7 @@ class ScheduleController: UIViewController {
     private func confirmButtonTapped() {
         selectedDays.sort(by: { $0.day.rawValue < $1.day.rawValue })
         delegate?.didConfirm(with: selectedDays)
+        
         dismiss(animated: true)
     }
 }
@@ -84,12 +85,13 @@ extension ScheduleController: ScheduleControllerProtocol {
     func didSelectedDays(for day: DaysOfWeek) {
         if !selectedDays.contains(where: {$0.day == day.day }) {
             selectedDays.append(day)
+            UserDefaults.standard.setValue(day.day.rawValue, forKey: "\(day.day.rawValue)")
         } else {
             selectedDays.removeAll(where: {$0.day == day.day})
+            UserDefaults.standard.removeObject(forKey: "\(day.day.rawValue)")
         }
     }
 }
-
 
 extension ScheduleController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -101,7 +103,25 @@ extension ScheduleController: UITableViewDataSource {
             print("err")
             return UITableViewCell()
         }
+        
+        if editingDays != nil {
+            editingDays?.forEach {
+                if $0.day == days[indexPath.row] {
+                    cell.switchButton.isOn = true
+                }
+            }
+        }
+        
+        let savedDays = UserDefaults.standard.object(forKey: "\(days[indexPath.row])") as? Int
     
+        if savedDays == days[indexPath.row].rawValue {
+            cell.switchButton.isOn = true
+        }
+        
+        if cell.switchButton.isOn {
+            selectedDays.append(DaysOfWeek(day: days[indexPath.row], isOn: true))
+        }
+            
         cell.delegate = self
         
         let dayName = days[indexPath.row]

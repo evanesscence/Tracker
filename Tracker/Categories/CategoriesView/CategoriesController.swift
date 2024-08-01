@@ -111,6 +111,7 @@ final class CategoriesController: UIViewController {
         categoriesTableView.clipsToBounds = true
         categoriesTableView.alwaysBounceVertical = false
         categoriesTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        categoriesTableView.allowsMultipleSelection = false
 
         view.addSubview(categoriesTableView)
         categoriesTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -147,7 +148,7 @@ extension CategoriesController: UITableViewDelegate {
         }
         
         cell.shouldShowDoneIcon()
-        UserDefaults.standard.setValue(viewModel.categories[indexPath.row].id, forKey: "selectedCategory")
+        UserDefaults.standard.setValue(viewModel.categories[indexPath.row].name, forKey: "selectedCategory")
         
         categoriesTableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectCategory(category: viewModel.categories[indexPath.row])
@@ -222,7 +223,7 @@ extension CategoriesController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        if UserDefaults.standard.object(forKey: "selectedCategory") as? String == viewModel.categories[indexPath.row].id {
+        if UserDefaults.standard.object(forKey: "selectedCategory") as? String == viewModel.categories[indexPath.row].name {
             cell.isSelected = true
             cell.shouldShowDoneIcon()
         }
