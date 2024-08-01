@@ -118,6 +118,9 @@ class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        filterButton.isHidden = visibleCategories.isEmpty
+        
         setupView()
         reloadData()
     }
