@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>top-level-items</key>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>20</string>
+					<key>EndingLineNumber</key>
+					<string>7</string>
+					<key>StartingColumnNumber</key>
+					<string>20</string>
+					<key>StartingLineNumber</key>
+					<string>7</string>
+					<key>Timestamp</key>
+					<string>739822700.0998321</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Tracker/UIColor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>        let scanner = Scanner(string: hexString)
+        if (hexString.hasPrefix("#")) {
+            scanner.</string>
+				<key>trailing</key>
+				<string>scanLocation = 1
+        }
+        var color: UInt32 = 0
+</string>
+			</dict>
+			<key>title</key>
+			<string>Warning: 'scanLocation' was deprecated in iOS 13.0</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
+</dict>
+</plist>
